@@ -25,22 +25,22 @@ import { decode as base64decode } from 'base-64';
    const { setUserId } = useContext(UserType);
 
    //to logged in from before
-   // useEffect(() => {
-   //   const checkLoginStatus=async()=>{
-   //    try {
-   //       const token=await AsyncStorage.getItem('authToken');
-   //       if(token){
-   //          navigation.replace('Home_Screen');
-   //       }
-   //       else{
-   //          //
-   //       }
-   //    } catch (error) {
-   //       console.log(error);
-   //    }
-   // }
-   // checkLoginStatus();
-   // }, [])
+  //  useEffect(() => {
+  //    const checkLoginStatus=async()=>{
+  //     try {
+  //        const token=await AsyncStorage.getItem('authToken');
+  //        if(token){
+  //           navigation.replace('Home_Screen');
+  //        }
+  //        else{
+  //           //
+  //        }
+  //     } catch (error) {
+  //        console.log(error);
+  //     }
+  //  }
+  //  checkLoginStatus();
+  //  }, [])
    
 
  // ...

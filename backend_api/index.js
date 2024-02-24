@@ -344,8 +344,8 @@ app.get("/messages/:senderId/:recipientId", async (req, res) => {
     //correct one
     const messages = await Message.find({
       $or: [
-                { senderId: senderObjectId }, { recipientId: recipientObjectId },
-               { senderId: recipientObjectId, recipientId: senderObjectId },
+                { senderId: senderObjectId },  {recipientId: recipientObjectId },
+               { senderId: recipientObjectId}, {recipientId: senderObjectId },
             ],
     })
       .populate("senderId", "_id name")

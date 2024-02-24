@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderBottomColor: "#dddddd",
-    
+    backgroundColor:'white'
   },
   friendreq: {
     marginTop:50,
-    fontSize:24,
+    fontSize:20,
     fontWeight:'bold',
     marginLeft:50,
   },
