@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../userContext";
-
+import BASE_URL from "../apiConfig";
 const Users = ({ item }) => {
   const [requestSent, setRequestSent] = useState(false);
   const { userId, setUserId } = useContext(UserType);
@@ -22,7 +22,7 @@ const Users = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://192.168.29.229:8000/friend-requests/sent/${userId}`
+          `${BASE_URL}/friend-requests/sent/${userId}`
         );
         // const response=await fethc(`http://192.168.137.195:8000/friend-requests/sent/${userId}`)
         const data = await response.json();
@@ -42,7 +42,7 @@ const Users = ({ item }) => {
     const fetchUserFriends = async () => {
       try {
         const response = await fetch(
-          `http://192.168.29.229:8000/friends/${userId}`
+          `${BASE_URL}/friends/${userId}`
         );
         // const response=await fetch(`http://192.168.137.195:8000/friendRequest/${userId}`)
         const data = await response.json();
@@ -60,7 +60,7 @@ const Users = ({ item }) => {
 
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://192.168.29.229:8000/friendRequest", {
+      const response = await fetch(`${BASE_URL}/friendRequest`, {
         // const response = await fetch("http://192.168.137.195:8000/friendRequest", {
         method: "POST",
         headers: {

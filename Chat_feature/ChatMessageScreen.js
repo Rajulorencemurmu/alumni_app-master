@@ -26,6 +26,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
+import BASE_URL from "../apiConfig";
+
 const ChatMessageScreen = () => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const [selectedMessages, setSelectedMessages] = useState([]);
@@ -61,7 +63,7 @@ const ChatMessageScreen = () => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://192.168.29.229:8000/messages/${userId}/${recipientId}`
+        `${BASE_URL}/messages/${userId}/${recipientId}`
         // `http://192.168.137.195:8000/messages/${userId}/${recipientId}`
       );
       if (!response.ok) {
@@ -91,7 +93,7 @@ const ChatMessageScreen = () => {
     const fetchrecipientData = async () => {
       try {
         const response = await fetch(
-          `http://192.168.29.229:8000/user/${recipientId}`
+          `${BASE_URL}/user/${recipientId}`
           // `http://192.168.137.195:8000/user/${recipientId}`
         );
 
@@ -131,7 +133,7 @@ const ChatMessageScreen = () => {
         formData.append("messageText", message);
       }
 
-      const response = await fetch("http://192.168.29.229:8000/messages", {
+      const response = await fetch(`${BASE_URL}/messages`, {
         // const response=await fetch("http://192.168.137.195:8000/messages",{
         method: "POST",
         body: formData,
@@ -217,7 +219,7 @@ const ChatMessageScreen = () => {
   const deleteMessages = async (messageIds) => {
     try {
       const response = await fetch(
-        "http://192.168.29.229:8000/deleteMessages",
+        `${BASE_URL}/deleteMessages`,
         // "http://http://192.168.137.195:8000/deleteMessages",
         {
           method: "POST",

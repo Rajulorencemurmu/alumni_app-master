@@ -13,6 +13,8 @@ import {
   Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import BASE_URL from '../apiConfig'
+
 // import {Picker} from '@react-native-picker/picker';
 
 // let Picker;
@@ -64,7 +66,7 @@ const RegisterScreen = () => {
 
     // send a POST request to the backend API to register the user
     axios
-      .post("http://192.168.29.229:8000/register", user)
+      .post(`${BASE_URL}/register`, user)
       // .post("http://192.168.137.195:8000/register",user)
       .then((response) => {
         console.log("Server response", response);

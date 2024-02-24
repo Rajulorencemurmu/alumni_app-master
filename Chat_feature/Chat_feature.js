@@ -11,7 +11,7 @@ import Users from "../Components/Users";
 
 import { decode as base64decode } from 'base-64';
 
-
+import BASE_URL from '../apiConfig'
 
 const Chat_feature = () => {
   //instead of jwtDecode i have used atob and it works fine
@@ -53,7 +53,7 @@ const Chat_feature = () => {
       const userId = parsedPayload.userId;
 
       axios
-        .get(`http://192.168.29.229:8000/users/${userId}`)
+        .get(`${BASE_URL}/users/${userId}`)
        
         // .get(`http://192.168.137.195:8000/users/${userId}`)
         .then((response) => {

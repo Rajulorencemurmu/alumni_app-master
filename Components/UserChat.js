@@ -11,6 +11,7 @@ import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useLayoutEffect } from "react";
 import { UserType } from "../userContext";
+import BASE_URL from "../apiConfig";
 
 const UserChat = ({ item }) => {
   const navigation = useNavigation();
@@ -22,7 +23,7 @@ const UserChat = ({ item }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://192.168.29.229:8000/messages/${userId}/${item._id}`
+        `${BASE_URL}/messages/${userId}/${item._id}`
       );
       if (!response.ok) {
         // Handle non-OK responses

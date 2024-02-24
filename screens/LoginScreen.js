@@ -15,6 +15,7 @@ import { UserType } from "../userContext";
 import { useContext } from "react";
 import jwtDecode from "jwt-decode";
 import { decode as base64decode } from 'base-64';
+import BASE_URL from "../apiConfig";
 
  const LoginScreen = () => {
    global.atob = base64decode;
@@ -45,6 +46,8 @@ import { decode as base64decode } from 'base-64';
 
  // ...
 
+
+
 const handleSubmitRequest = async () => {
    const user = {
      email: email,
@@ -52,7 +55,7 @@ const handleSubmitRequest = async () => {
    };
  
    try {
-     const response = await axios.post("http://192.168.29.229:8000/login", user);
+     const response = await axios.post(`${BASE_URL}/login`, user);
     // const response = await axios.post("http://192.168.137.195:8000/login", user);
  
      console.log('Server response', response);

@@ -6,6 +6,7 @@ import { UserType } from "../userContext";
 import FriendRequests from "../Components/FriendRequests";
 import { useNavigation } from "@react-navigation/native";
 // import Header from "./Header";
+import BASE_URL from "../apiConfig";
 
 const FriendsScreen = () => {
   const { userId, setUserId } = useContext(UserType);
@@ -23,7 +24,7 @@ const navigation=useNavigation()
         return;
       }
       console.log("Current UserId in React Native:", userId);
-      const url = `http://192.168.29.229:8000/friendRequest/${userId}`;
+      const url = `${BASE_URL}/friendRequest/${userId}`;
     //  const url=` http://192.168.137.195:8000/friendRequest/${userId}`;
       console.log("Requesting friend requests from:", url);
 
