@@ -279,10 +279,29 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+
 //endpoint to post Messages and store it in the backend
 app.post("/messages", upload.single("imageFile"), async (req, res) => {
   try {
     const { senderId, recipientId, messageType, messageText } = req.body;
+
+    //   // Check if the recipient is a valid user
+    //   const recipient = await User.findById(recipientId);
+    //   if (!recipient) {
+    //     return res.status(400).json({ error: "Recipient user not found" });
+    //   }
+
+    //    // Check if the sender is friends with the recipient
+    // const sender = await User.findById(senderId);
+    // if (!sender.friends.includes(recipientId)) {
+    //   return res.status(400).json({ error: "You are not friends with the recipient" });
+    // }
+
+    //  // Check if the sender is the intended sender
+    //  if (senderId !== req.user.userId) {
+    //   return res.status(400).json({ error: "You are not allowed to send messages on behalf of others" });
+    // }
+
 
     const newMessage = new Message({
       senderId,
@@ -312,6 +331,9 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
   }
 });
 
+
+
+
 //endpoint to fetch the messages between two users in the chatRoom
 app.get("/messages/:senderId/:recipientId", async (req, res) => {
   try {
@@ -327,25 +349,17 @@ app.get("/messages/:senderId/:recipientId", async (req, res) => {
       recipientObjectId,
       query: {
         $or: [
-          { senderId: senderObjectId, recipientId: recipientObjectId },
-          { senderId: recipientObjectId, recipientId: senderObjectId },
+          { senderId: senderObjectId}, {recipientId: recipientObjectId },
+          { senderId: recipientObjectId}, {recipientId: senderObjectId },
         ],
       },
     });
 
-    // const messages = await Message.find({
-    //   $or: [
-    //     { senderId: senderObjectId, recipientId: recipientObjectId },
-    //     { senderId: recipientObjectId, recipientId: senderObjectId },
-    //   ],
-    // }).populate("senderId", "_id name")
-    // .populate("recipientId", "_id name");
-
     //correct one
     const messages = await Message.find({
       $or: [
-                { senderId: senderObjectId },  {recipientId: recipientObjectId },
-               { senderId: recipientObjectId}, {recipientId: senderObjectId },
+                { senderId: senderObjectId ,  recipientId: recipientObjectId },
+               { senderId: recipientObjectId, recipientId: senderObjectId },
             ],
     })
       .populate("senderId", "_id name")

@@ -9,6 +9,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../userContext";
 import BASE_URL from "../apiConfig";
+
 const Users = ({ item }) => {
   const [requestSent, setRequestSent] = useState(false);
   const { userId, setUserId } = useContext(UserType);

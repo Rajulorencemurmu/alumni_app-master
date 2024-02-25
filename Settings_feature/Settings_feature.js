@@ -1,37 +1,66 @@
-import { View, Text ,Button} from 'react-native'
-import React from 'react';
+import React, { useContext } from 'react';
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserType } from '../userContext';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const Settings_features = () => {
+  const navigation = useNavigation();
+  const { setUserId,logout } = useContext(UserType);
 
-const Settings_feature = () => {
-  const handleLogout = async() => {
-  
-    // const handleLogout = async () => {
-      const navigation = useNavigation();
-      try {
+  const handleLogout = async () => {
+    try {
+      console.log('this is setuserid from setting_features.js',setUserId);
+      // Clear the authentication token from AsyncStorage
+      await AsyncStorage.removeItem('authToken');
 
-        // Clear the authentication token from AsyncStorage
-        await AsyncStorage.removeItem('authToken');
-  
-        // Navigate to the Login screen
-        // navigation.replace('Login_Screen');
-  
-        Alert.alert('Logout', 'You have been logged out successfully');
-      } catch (error) {
-        console.error('Error in logout:', error);
-        Alert.alert('Logout Error', 'An error occurred while logging out');
-      }
-    // }
-  }
- 
-        return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Settings!</Text>
-          <Button title="Logout" onPress={handleLogout}/>
-          
-        </View>
-        )
-}
+      // Clear the user ID from context
+      // setUserId(null);
+      logout();
+      
+      console.log('this is setuserid from setting_features.js',setUserId);
 
-export default Settings_feature;
+      // Navigate back to the login screen
+      navigation.navigate('Login_Screen');
+    } catch (error) {
+      console.log('Error during logout:', error.message);
+      Alert.alert('Logout Error', 'An error occurred while logging out');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Are you sure you want to logout?</Text>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default Settings_features;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  logoutButton: {
+    backgroundColor: 'tomato',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

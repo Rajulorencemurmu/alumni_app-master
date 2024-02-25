@@ -20,6 +20,7 @@ const UserChat = ({ item }) => {
 
   console.log("Image in user chat=", item.image);
   console.log("Name in user chat=", item.name);
+
   const fetchMessages = async () => {
     try {
       const response = await fetch(
@@ -31,7 +32,10 @@ const UserChat = ({ item }) => {
         return;
       }
       const data = await response.json();
+
       console.log("Full response:", response);
+      
+    
       if (response.ok) {
         console.log("Is response OK?", response.ok);
         console.log("data=", data);
@@ -44,14 +48,15 @@ const UserChat = ({ item }) => {
     }
   };
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+ 
+
+
 
   const getLastMessages = () => {
     const userMessage = messages.filter(
       (message) => message.messageType === "text"
     );
+    // const userMessage = messages;
     const n = userMessage.length;
     return n > 0 ? userMessage[n - 1].message : "";
   };
@@ -81,7 +86,10 @@ const UserChat = ({ item }) => {
 
   const lastMessageTimeStamp = getLastMessageTimeStamp();
 
-  
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
   return (
     <KeyboardAvoidingView>
     {/* <View style={styles.topbar}></View> */}
@@ -142,3 +150,5 @@ const styles = StyleSheet.create({
     borderBottomColor: "#dddddd",
   },
 });
+
+

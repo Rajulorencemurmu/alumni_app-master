@@ -17,10 +17,6 @@ const ChatScreen = () => {
           `${BASE_URL}/acceptedFriends/${userId}`
           // `http://192.168.137.195:8000/acceptedFriends/${userId}`
         );
-       
-        // if (response.ok) {
-        //   setAcceptedFriends(data);
-        // }
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }  

@@ -72,7 +72,7 @@ const ChatMessageScreen = () => {
         return;
       }
       const data = await response.json();
-      console.log("Full response:", response);
+      console.log("Full response:", data);
       if (response.ok) {
         console.log("Is response OK?", response.ok);
         console.log("data=", data);
@@ -112,7 +112,7 @@ const ChatMessageScreen = () => {
     try {
       const formData = new FormData();
       formData.append("senderId", userId);
-      formData.append("recepientId", recipientId);
+      formData.append("recipientId", recipientId);
 
       //if the message type id image or a normal text
       if (messageType === "image") {
@@ -160,60 +160,6 @@ const ChatMessageScreen = () => {
   };
 
   console.log("Message=", selectedMessages);
-
-  
-  
-  // useLayoutEffect(() => {
-  //   console.log("i am inside  layout effect");
-  //   navigation.setOptions({
-  //     headerTitle: "",
-  //     headerLeft: () => (
-  //       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-  //         {/* <Ionicons name="arrow-back-circle-sharp" size={24} color="black" /> */}
-
-  //         {/* {selectedMessages.length > 0 ? (
-  //           <View>
-  //             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-  //               {selectedMessages.length}
-  //             </Text>
-  //           </View>
-  //         ) : (
-  //           <View style={{ flexDirection: "row", alignItems: "center" }}>
-  //             <Image
-  //               style={{
-  //                 width: 30,
-  //                 height: 30,
-  //                 borderRadius: 15,
-  //                 resizeMode: "cover",
-  //               }}
-  //               source={{ uri: recipientData?.image }}
-  //             />
-
-  //             <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>
-  //               {recipientData?.name}
-  //             </Text>
-  //           </View>
-  //         )} */}
-  //       </View>
-  //     ),
-  //     headerRight: () =>
-  //       selectedMessages.length > 0 ? (
-  //         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-  //           <Ionicons name="arrow-redo" size={24} color="black" />
-  //           <Ionicons name="arrow-undo" size={24} color="black" />
-  //           <FontAwesome name="star" size={24} color="black" />
-  //           <MaterialIcons
-  //             onPress={() => deleteMessages(selectedMessages)}
-  //             name="delete"
-  //             size={24}
-  //             color="black"
-  //           />
-  //         </View>
-  //       ) : null,
-  //   });
-  // }, [recipientData, selectedMessages]);
-
-
 
 
   const deleteMessages = async (messageIds) => {
@@ -437,7 +383,7 @@ const ChatMessageScreen = () => {
                 <View>
                   <Image
                     source={source}
-                    style={{ width: 200, height: 200, borderRadius: 7 }}
+                    style={{ width: 200, height: 200, borderRadius: 7 }} 
                   />
                   <Text
                     style={{
