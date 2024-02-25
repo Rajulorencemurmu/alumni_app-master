@@ -161,7 +161,6 @@ const ChatMessageScreen = () => {
 
   console.log("Message=", selectedMessages);
 
-
   const deleteMessages = async (messageIds) => {
     try {
       const response = await fetch(
@@ -230,7 +229,6 @@ const ChatMessageScreen = () => {
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
       <View style={styles.topbar}>
-
         <Ionicons
           onPress={() => navigation.goBack()}
           name="arrow-back-circle-sharp"
@@ -238,8 +236,15 @@ const ChatMessageScreen = () => {
           color="black"
           style={{ marginTop: 18, paddingTop: 18 }}
         />
-          {selectedMessages.length>0?( 
-          <View style={{ flexDirection: "row", marginTop:30,marginLeft:150,gap: 10, }}>
+        {selectedMessages.length > 0 ? (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 30,
+              marginLeft: 150,
+              gap: 10,
+            }}
+          >
             <Ionicons name="arrow-redo" size={24} color="black" />
             <Ionicons name="arrow-undo" size={24} color="black" />
             <FontAwesome name="star" size={24} color="black" />
@@ -250,16 +255,14 @@ const ChatMessageScreen = () => {
               color="black"
             />
           </View>
-        ) : null
-        }
+        ) : null}
 
         {selectedMessages.length > 0 ? (
           <View>
-            <Text style={{ fontSize: 16, fontWeight: "500",marginTop:30 }}>
+            <Text style={{ fontSize: 16, fontWeight: "500", marginTop: 30 }}>
               {selectedMessages.length}
             </Text>
           </View>
-
         ) : (
           <View
             style={{
@@ -273,21 +276,23 @@ const ChatMessageScreen = () => {
           >
             <Image
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 15,
+                width: 40,
+                height: 40,
+                borderRadius: 20,
                 resizeMode: "cover",
               }}
               source={{ uri: recipientData?.image }}
+              onPress={() => navigation.navigate('Profile')}
             />
 
-            <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>
+            <Text
+              style={{ marginLeft: 5, fontSize: 18, fontWeight: "bold" }}
+              onPress={() => navigation.navigate('Profile')}
+            >
               {recipientData?.name}
             </Text>
           </View>
         )}
-              
-
       </View>
       <ScrollView
         ref={scrollViewRef}
@@ -383,7 +388,7 @@ const ChatMessageScreen = () => {
                 <View>
                   <Image
                     source={source}
-                    style={{ width: 200, height: 200, borderRadius: 7 }} 
+                    style={{ width: 200, height: 200, borderRadius: 7 }}
                   />
                   <Text
                     style={{

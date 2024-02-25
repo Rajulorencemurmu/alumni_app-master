@@ -42,7 +42,8 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginVertical: 10,
+        marginVertical: -10,
+        padding:5,
       }}
     >
     
@@ -52,7 +53,7 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
       />
 
       <Text
-        style={{ fontSize: 15, fontWeight: "bold", marginLeft: 10, flex: 1 }}
+        style={{fontWeight:'bold',fontSize:15}}
       >
         {item?.name} sent you a friend request!!
       </Text>

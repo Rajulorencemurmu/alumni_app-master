@@ -8,6 +8,7 @@ import { UserContext } from "./userContext";
 import FriendsScreen from "./Chat_feature/FriendsScreen";
 import ChatScreen from "./Chat_feature/ChatScreen";
 import ChatMessageScreen from "./Chat_feature/ChatMessageScreen";
+import Profile_Screen from "./ProfileScreen/Profile_Screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,19 +33,24 @@ function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Friends"
+          name="Friend Requests"
           component={FriendsScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Chats"
           component={ChatScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Messages"
           component={ChatMessageScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile_Screen}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
