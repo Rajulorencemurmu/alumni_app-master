@@ -15,7 +15,7 @@ const Settings_features = () => {
       await AsyncStorage.removeItem('authToken');
 
       // Clear the user ID from context
-      // setUserId(null);
+      // setUserId('');
       logout();
       
       console.log('this is setuserid from setting_features.js',setUserId);

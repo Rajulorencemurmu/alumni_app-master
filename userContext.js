@@ -6,8 +6,7 @@ const UserContext = ({children}) => {
     const [userId,setUserId] = useState("");
     
     const logout=()=>{
-        setUserId("")
-        // dispatch({ type: 'LOGOUT' });
+        setUserId('')
     }
     
     return (
