@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     email:{type :String ,required:true,unique:true},
     password: { type: String, required: true },
     number: { type: String, unique: true,required: true },
-
     // profileImage: { data: Buffer, contentType: String },
     // dateCreated: { type: Date, default: Date.now() }
 
@@ -27,7 +26,17 @@ const userSchema = new mongoose.Schema({
     sentFriendRequests:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-    }]
+    }],
+    
+    location: {
+        type: {
+          type: String,
+          enum: ["Point"],
+        },
+        coordinates: {
+          type: [Number],
+        },
+      },
 })
 
 const User=mongoose.model("User",userSchema)

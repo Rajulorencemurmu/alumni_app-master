@@ -56,6 +56,10 @@ app.post("/register", async (req, res) => {
       // number:number,
       ...(number !== undefined ? { number } : {}),
       image: image,
+      location: {
+        type: "Point",
+        coordinates: [req.body.location.coordinates[0], req.body.location.coordinates[1]],
+      },
     });
 
     console.log("after running newUser");
@@ -79,9 +83,11 @@ app.post("/register", async (req, res) => {
     console.error("Error in registration:", error);
     res.status(500).send("Internal Server Error: " + error.message);
   }
-  console.log("error log1");
+  console.log("I am here NOW");
 });
 
+
+//login route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   console.log("email=", email);
@@ -94,6 +100,23 @@ app.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
+   
+
+     // Get the user's location from the database
+     const location = await User.findOne({ username: user.username }, { location: 1 });
+
+     // Update the user's location in the database
+     await User.updateOne(
+       { username: user.username },
+       {
+         $set: {
+           location: {
+             type: "Point",
+             coordinates: [location.location.coordinates[0], location.location.coordinates[1]],
+           },
+         },
+       }
+     );
 
     // Check if the password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -115,6 +138,7 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 //endpoint to access all users currently logged in
 app.get("/users/:userId", (req, res) => {
@@ -438,3 +462,90 @@ app.get("/friends/:userId", (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 });
+
+
+
+//location 
+// app.post("/api/location", async (req, res) => {
+//   const { username, password, location } = req.body;
+
+//   try {
+//     const user = await User.findOne({ username, password });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     user.location = {
+//       type: "Point",
+//       coordinates: [location.longitude, location.latitude],
+//     };
+
+//     await user.save();
+//     res.json({ message: "Location updated" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
+// app.post("/api/location", async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     const user = await User.findOne({ username, password });
+//     console.log('User in api location',user);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     res.json({
+//       type: "Point",
+//       coordinates: user.location.coordinates,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error from API_LOCATION" });
+//   }
+// });
+
+app.post("/api/location", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Check if the user exists
+    const user = await User.findOne({ username, password });
+    console.log("User in api location", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Get the locations of all registered users from the database
+    const locations = await User.find({}, { location: 1 });
+
+    // Convert the locations to the format required by the react-native-maps library
+    const formattedLocations = locations.map((location) => ({
+      type: "Point",
+      coordinates: [location.location.coordinates[0], location.location.coordinates[1]],
+    }));
+
+    // Add the user's location to the list of locations
+    const userLocation = {
+      type: "Point",
+      coordinates: [
+        user.location.coordinates[0],
+        user.location.coordinates[1],
+        user.location.coordinates[0] * 100,
+        user.location.coordinates[1] * 100,
+      ],
+    };
+
+    formattedLocations.push(userLocation); // Pushing logged-in user's location
+
+    // Return the locations as the response body
+    res.json(formattedLocations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error from API_LOCATION" });
+  }
+});
+

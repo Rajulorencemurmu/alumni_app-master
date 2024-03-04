@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import Users from "../Components/Users";
+import LoadingIndicator from "../LoadingIndicator"; // Import LoadingIndicator
 
 import { decode as base64decode } from 'base-64';
 
@@ -20,6 +21,8 @@ const Chat_feature = () => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -29,8 +32,8 @@ const Chat_feature = () => {
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 ,marginRight:10,}}>
           <Ionicons
-           onPress={() => navigation.navigate("Chats")} 
-          name="chatbox-ellipses-outline" size={24} color="black" />
+            onPress={() => navigation.navigate("Chats")} 
+            name="chatbox-ellipses-outline" size={24} color="black" />
           <MaterialIcons
             onPress={() => navigation.navigate("Friend Requests")}
             name="people-outline"
@@ -54,13 +57,14 @@ const Chat_feature = () => {
 
       axios
         .get(`${BASE_URL}/users/${userId}`)
-       
-        // .get(`http://192.168.137.195:8000/users/${userId}`)
         .then((response) => {
           setUsers(response.data);
         })
         .catch((error) => {
           console.log("error retrieving users", error);
+        })
+        .finally(() => {
+          setLoading(false); // Set loading to false after fetching users
         });
     };
 
@@ -68,13 +72,18 @@ const Chat_feature = () => {
   }, []);
 
   console.log("users", users);
+
   return (
     <View>
-      <View style={{ padding: 10 }}>
-        {users.map((item, index) => (
-          <Users key={index} item={item} />
-        ))}
-      </View>
+      {loading ? (
+        <LoadingIndicator visible={loading} />
+      ) : (
+        <View style={{ padding: 10 }}>
+          {users.map((item, index) => (
+            <Users key={index} item={item} />
+          ))}
+        </View>
+      )}
     </View>
   );
 };

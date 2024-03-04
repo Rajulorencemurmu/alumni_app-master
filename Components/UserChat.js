@@ -12,16 +12,20 @@ import { useNavigation } from "@react-navigation/native";
 import { useLayoutEffect } from "react";
 import { UserType } from "../userContext";
 import BASE_URL from "../apiConfig";
+import LoadingIndicator from '../LoadingIndicator'
+
 
 const UserChat = ({ item }) => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false); // State variable to manage loading
 
   console.log("Image in user chat=", item.image);
   console.log("Name in user chat=", item.name);
 
   const fetchMessages = async () => {
+    setLoading(true); // Set loading to true when data fetching starts
     try {
       const response = await fetch(
         `${BASE_URL}/messages/${userId}/${item._id}`
@@ -45,6 +49,9 @@ const UserChat = ({ item }) => {
       }
     } catch (error) {
       console.log("error fetching messages", error);
+    }
+    finally {
+      setLoading(false); // Set loading to false when data fetching finishes
     }
   };
 
@@ -93,7 +100,11 @@ const UserChat = ({ item }) => {
   return (
     <KeyboardAvoidingView>
     {/* <View style={styles.topbar}></View> */}
+
     <ScrollView>
+    {loading ? (
+          <LoadingIndicator visible={loading} /> // Use LoadingIndicator component here
+        ):
       <Pressable
         style={styles.container}
         onPress={() =>
@@ -116,6 +127,7 @@ const UserChat = ({ item }) => {
           </Text>
         </View>
       </Pressable>
+    }
     </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -133,7 +145,19 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    padding: 10,
+    // padding: 10,
+    marginVertical: 3,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+          backgroundColor: "#fff",
+          borderRadius: 8,
+          padding: 10,
   },
   img: {
     width: 50,

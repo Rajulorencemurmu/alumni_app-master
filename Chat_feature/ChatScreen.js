@@ -4,15 +4,19 @@ import { UserType } from "../userContext";
 import { useNavigation } from "@react-navigation/native";
 import UserChat from "../Components/UserChat";
 import BASE_URL from "../apiConfig";
+import LoadingIndicator from '../LoadingIndicator'
+
 const ChatScreen = () => {
   const [acceptedFriends, setAcceptedFriends ] = useState([]);
   const { userId, setUserId } = useContext(UserType);
   const navigation = useNavigation();
-
+  const [loading, setLoading] = useState(false); // State variable to manage loading
 
   useEffect(() => {
     const acceptedFriendsList = async () => {
+    
       try {
+        setLoading(true); // Set loading to true when data fetching starts
         const response = await fetch(
           `${BASE_URL}/acceptedFriends/${userId}`
           // `http://192.168.137.195:8000/acceptedFriends/${userId}`
@@ -26,6 +30,9 @@ const ChatScreen = () => {
       } catch (error) {
         console.log("error showing accepted friends", error);
       }
+      finally {
+        setLoading(false); // Set loading to false when data fetching finishes
+      }
     };
     acceptedFriendsList();
   }, [userId]);
@@ -34,9 +41,13 @@ console.log('friends list',acceptedFriends);
   return (
     <View style={{ }}>
       <ScrollView showsVerticalScrollIndicator={false}>
+      {loading ? (
+          <LoadingIndicator visible={loading} /> // Use LoadingIndicator component here
+        ):
         <Pressable>
             {acceptedFriends.map((item,index)=>(<UserChat key={index} item={item}/>))}
         </Pressable>
+      }
       </ScrollView>
     </View>
   );

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,ActivityIndicator
 } from "react-native";
 import { UserType } from "../userContext";
 import { useContext } from "react";
@@ -21,27 +21,28 @@ const LoginScreen = () => {
   global.atob = base64decode;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // State variable to manage loading state
 
   const navigation = useNavigation();
   const { setUserId } = useContext(UserType);
 
   //to logged in from before
-  //  useEffect(() => {
-  //    const checkLoginStatus=async()=>{
-  //     try {
-  //        const token=await AsyncStorage.getItem('authToken');
-  //        if(token){
-  //           navigation.replace('Home_Screen');
-  //        }
-  //        else{
-  //           //
-  //        }
-  //     } catch (error) {
-  //        console.log(error);
-  //     }
-  //  }
-  //  checkLoginStatus();
-  //  }, [])
+   useEffect(() => {
+     const checkLoginStatus=async()=>{
+      try {
+         const token=await AsyncStorage.getItem('authToken');
+         if(token){
+            navigation.replace('Home_Screen');
+         }
+         else{
+            //
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   }
+   checkLoginStatus();
+   }, [])
 
   // ...
 
@@ -51,11 +52,16 @@ const LoginScreen = () => {
       password: password,
     };
 
+    setLoading(true); // Set loading to true when login process starts
+
     try {
       const response = await axios.post(`${BASE_URL}/login`, user);
       // const response = await axios.post("http://192.168.137.195:8000/login", user);
 
       console.log("Server response", response);
+
+       // Simulate login process delay (remove this line in actual implementation)
+       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (response.data) {
         // Log the entire response data to inspect its structure
@@ -94,47 +100,12 @@ const LoginScreen = () => {
         "An error occurred while processing your request"
       );
     }
+    setLoading(false); // Set loading to false when login process ends
   };
 
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="position" enabled>
-
-      <View>
-          <View
-            // style={{
-            //   height: 250,
-            //   width: 250,
-            //   borderRadius: 250,
-            //   position: "absolute",
-            //   backgroundColor:'#9BCF53',
-            //   left:167,
-            //   top:-165,
-            // }}
-          ></View>
-          <View
-            // style={{
-            //   height: 60,
-            //   width: 60,
-            //   borderRadius: 60,
-            //   position: "absolute",
-            //   backgroundColor:'#FFA447',
-            //   left:295,
-            //   top:90,
-            // }}
-          ></View>
-          <View
-            // style={{
-            //   height: 100,
-            //   width: 100,
-            //   borderRadius: 100,
-            //   position: "absolute",
-            //   backgroundColor:'#59B4C3',
-            //   top:-100,left:80,
-            // }}
-          ></View>
-        </View>
-
         <Text style={styles.title1}>My</Text>
         <Text style={styles.title2}>ALUMNI</Text>
         <Text style={styles.title3}>NETWORK</Text>
@@ -164,6 +135,13 @@ const LoginScreen = () => {
         >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
+
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="tomato" />
+          </View>
+        )}
+
       </KeyboardAvoidingView>
       <TouchableOpacity
         style={styles.googleButton}
@@ -174,41 +152,7 @@ const LoginScreen = () => {
         <Text style={styles.googleButtonText}>Create New Account</Text>
       </TouchableOpacity>
 
-      <View>
-          <View
-            // style={{
-            //   height: 250,
-            //   width: 250,
-            //   borderRadius: 250,
-            //   position: "absolute",
-            //   backgroundColor:'#50C4ED',
-            //   left:-157,
-            //   top:-10,
-            // }}
-          ></View>
-          <View
-            style={{
-              // height: 50,
-              // width: 50,
-              // borderRadius: 50,
-              // position: "absolute",
-              // backgroundColor:'#EFF396',
-              // left:-37,
-              // top:-60,
-            }}
-          ></View>
-          <View
-            // style={{
-            //   height: 100,
-            //   width: 100,
-            //   borderRadius: 100,
-            //   position: "absolute",
-            //   backgroundColor:'#FB88B4',
-            //   top:100,
-            //   left:25,
-            // }}
-          ></View>
-        </View>
+      
     </View>
   );
 };
@@ -221,6 +165,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 30,
     paddingTop: 50,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.7);",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title1: {
     fontSize: 38,

@@ -42,13 +42,12 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginVertical: -10,
-        padding:5,
+        padding:6,
       }}
     >
     
       <Image
-        style={{ width: 50, height: 50, borderRadius: 25 }}
+        style={{ width: 45, height: 45, borderRadius: 25 }}
         source={{ uri: item.image }}
       />
 

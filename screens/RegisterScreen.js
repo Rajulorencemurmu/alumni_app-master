@@ -10,10 +10,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Image,
-  Platform,
+  Platform,ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import BASE_URL from '../apiConfig'
+import * as Location from 'expo-location';
 
 // import {Picker} from '@react-native-picker/picker';
 
@@ -27,6 +28,7 @@ import BASE_URL from '../apiConfig'
 const occupations = ["Student", "Professor", "Alumni"];
 
 const RegisterScreen = () => {
+  const [loading, setLoading] = useState(false); // State variable to manage loading
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -51,18 +53,25 @@ const RegisterScreen = () => {
     })();
   }, []);
 
-  const handleRegister = () => {
+  const handleRegister = async() => {
+
+    setLoading(true); // Set loading to true before making the axios request
+    let location = await Location.getCurrentPositionAsync({});
+
     const user = {
       name: name,
       email: email,
       password: password,
       number: number,
       image: image,
-      // occupation: occupation,
-      // workingPlace: occupation === "Alumni" ? workingPlace : null,
+      location: {
+        type: "Point",
+        coordinates: [location.coords.longitude, location.coords.latitude],
+      },
     };
-    console.log("Image=", image);
-    console.log("User object:", user);
+    // console.log("Image=", image);
+    // console.log("User object:", user);
+    console.log('location is',location);
 
     // send a POST request to the backend API to register the user
     axios
@@ -81,6 +90,8 @@ const RegisterScreen = () => {
         setNumber("");
         setImage(null);
 
+        
+
         navigation.navigate("Login_Screen");
       })
       .catch((error) => {
@@ -90,6 +101,9 @@ const RegisterScreen = () => {
           "Registration Error",
           "An error occurred while registering"
         );
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after axios request completes
       });
   };
 
@@ -177,6 +191,14 @@ const RegisterScreen = () => {
             style={{ width: 100, height: 100, marginTop: 10 }}
           />
         )}
+
+          {/* for loading screen */}
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="tomato" />
+          </View>
+        )}
+
         <TouchableOpacity
           style={styles.loginwithpass}
           onPress={() => {
@@ -204,6 +226,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 30,
     paddingTop: 50,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.7);",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title1: {
     fontSize: 38,

@@ -25,7 +25,6 @@ const Users = ({ item }) => {
         const response = await fetch(
           `${BASE_URL}/friend-requests/sent/${userId}`
         );
-        // const response=await fethc(`http://192.168.137.195:8000/friend-requests/sent/${userId}`)
         const data = await response.json();
         if (response.ok) {
           setFriendRequests(data); // Update state with fetched friend requests
@@ -45,7 +44,6 @@ const Users = ({ item }) => {
         const response = await fetch(
           `${BASE_URL}/friends/${userId}`
         );
-        // const response=await fetch(`http://192.168.137.195:8000/friendRequest/${userId}`)
         const data = await response.json();
         if (response.ok) {
           setUserFriends(data);
@@ -62,7 +60,6 @@ const Users = ({ item }) => {
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
       const response = await fetch(`${BASE_URL}/friendRequest`, {
-        // const response = await fetch("http://192.168.137.195:8000/friendRequest", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
