@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import BASE_URL from "../apiConfig";
+import { UserType } from "../userContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Map_feature = () => {
+  const { userId } = useContext(UserType); // Access userId from the context
+
   const [currentLocation, setCurrentLocation] = useState(null);
   const [initialRegion, setInitialRegion] = useState(null);
   const [allLocations, setAllLocations] = useState([]);
@@ -29,23 +32,23 @@ const Map_feature = () => {
         longitudeDelta: 0.005,
       });
 
-      // Fetch all locations
+      // Fetch the locations of all users including the current user
       const response = await fetch(`${BASE_URL}/api/location`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "your_username",
-          password: "your_password",
+          currentUserId: userId, // Access userId from the context
         }),
       });
       const data = await response.json();
       setAllLocations(data);
+      // console.log('showing location of users in mapfeature.js',data)
     };
 
     getLocation();
-  }, []);
+  }, [userId]); // Add userId to dependencies to re-fetch when user changes
 
   return (
     <View style={styles.container}>
@@ -57,7 +60,8 @@ const Map_feature = () => {
                 latitude: currentLocation.latitude,
                 longitude: currentLocation.longitude,
               }}
-              title="Your Location"
+              title="My Marker"
+              description="This is my marker."
             />
           )}
           {Array.isArray(allLocations) &&
@@ -69,6 +73,7 @@ const Map_feature = () => {
                   longitude: location.coordinates[0],
                 }}
                 title="User Location"
+                
               />
             ))}
         </MapView>
@@ -87,6 +92,7 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: windowHeight,
   },
+  
 });
 
 export default Map_feature;

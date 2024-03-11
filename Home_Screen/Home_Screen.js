@@ -1,39 +1,67 @@
-import { StyleSheet, Text, View, DrawerLayoutAndroid } from "react-native";
-import React, { useRef, useState } from "react";
-import { useLayoutEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, View, DrawerLayoutAndroid, TouchableOpacity } from "react-native";
+import React, { useRef,useState } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 const Home_Screen = () => {
   const navigation = useNavigation();
+  const drawerRef = useRef(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerTitle: "",
-  //     headerLeft: () => (
-  //       <View style={{ flexDirection: "row", marginLeft: 15, gap: 16 }}>
-  //         <Ionicons
-  //           name="menu-outline"
-  //           size={26}
-  //           color="black"
-  //           onPress={() => {
-  //             console.log('menu pressed')
-  //           }}
-  //         />
-  //         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Home</Text>
-  //       </View>
-  //     ),
-  //   });
-  // }, [])
+  useFocusEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Home",
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            if (isDrawerOpen) {
+              drawerRef.current.closeDrawer();
+            } else {
+              drawerRef.current.openDrawer();
+            }
+            setIsDrawerOpen(!isDrawerOpen);
+          }}
+          style={{ marginLeft: 15 }}
+        >
+          <Ionicons name="menu-outline" size={28} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  });
 
- 
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Home! hello I am home</Text>
+  const navigationView = (
+    <View style={styles.navigationContainer}>
+      <Text onPress={() => navigation.navigate("MyProfile")}>My Profile</Text>
+      <Text onPress={() => navigation.navigate("Screen2")}>Screen 2</Text>
+      <Text onPress={() => navigation.navigate("Screen3")}>Screen 3</Text>
     </View>
+  );
+
+  return (
+    <DrawerLayoutAndroid
+      ref={drawerRef}
+      drawerWidth={250}
+      drawerPosition="left"
+      renderNavigationView={() => navigationView}
+    >
+      <View style={styles.container}>
+        <Text>Home! hello I am home</Text>
+      </View>
+    </DrawerLayoutAndroid>
   );
 };
 
-export default Home_Screen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  navigationContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default Home_Screen;

@@ -9,13 +9,14 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
-  KeyboardAvoidingView,ActivityIndicator
+  KeyboardAvoidingView,ActivityIndicator, Image
 } from "react-native";
 import { UserType } from "../userContext";
 import { useContext } from "react";
 import jwtDecode from "jwt-decode";
 import { decode as base64decode } from "base-64";
 import BASE_URL from "../apiConfig";
+
 
 const LoginScreen = () => {
   global.atob = base64decode;
@@ -105,6 +106,7 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
+    {/* <Image src="connecting.png" style={{height:54,width:44,}}/> */}
       <KeyboardAvoidingView behavior="position" enabled>
         <Text style={styles.title1}>My</Text>
         <Text style={styles.title2}>ALUMNI</Text>
@@ -180,7 +182,8 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 40,
     fontWeight: "800",
-    color: "#000",
+    // color: "#000",
+    color:'tomato',
   },
   title3: {
     fontSize: 38,

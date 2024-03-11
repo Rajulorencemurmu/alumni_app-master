@@ -508,13 +508,18 @@ app.get("/friends/:userId", (req, res) => {
 //   }
 // });
 
+
+
+
+
 app.post("/api/location", async (req, res) => {
-  const { username, password } = req.body;
+  const { currentUserId } = req.body;
+  console.log("current user in Maps of index.js=", currentUserId);
 
   try {
-    // Check if the user exists
-    const user = await User.findOne({ username, password });
-    console.log("User in api location", user);
+    const user = await User.findById(currentUserId);
+    console.log("User in api location=", user);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -548,4 +553,3 @@ app.post("/api/location", async (req, res) => {
     res.status(500).json({ message: "Server error from API_LOCATION" });
   }
 });
-

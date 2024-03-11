@@ -12,7 +12,7 @@ import ChatScreen from './Chat_feature/ChatScreen';
 import ChatMessageScreen from './Chat_feature/ChatMessageScreen';
 import Profile_Screen from './ProfileScreen/Profile_Screen';
 import MainDrawer from './DrawerScreens/MainDrawer';
-
+import MyProfile from './SideBarComponents/MyProfile'
 const Stack = createNativeStackNavigator();
 // const Drawer = createDrawerNavigator();
 
@@ -57,6 +57,11 @@ function App() {
             options={{ headerShown: true }}
           />
 
+          <Stack.Screen
+            name="MyProfile"
+            component={MyProfile}
+            options={{ headerShown: true }}
+          />
           {/* <Stack.Screen
             name="MainDrawer"
             component={MainDrawer}
