@@ -61,7 +61,7 @@ export default function HomeScreen() {
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Maps" component={MapsScreen} />
       <Tab.Screen name="Internships" component={InternshipsScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      {/* <Tab.Screen name="Settings" component={SettingsScreen} /> */}
       {/* <Tab.Screen name="FriendRequest" component={FriendRequest} /> */}
     </Tab.Navigator>
   );

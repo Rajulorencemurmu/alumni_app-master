@@ -13,6 +13,7 @@ import ChatMessageScreen from './Chat_feature/ChatMessageScreen';
 import Profile_Screen from './ProfileScreen/Profile_Screen';
 import MainDrawer from './DrawerScreens/MainDrawer';
 import MyProfile from './SideBarComponents/MyProfile'
+import Events from './SideBarComponents/Events';
 const Stack = createNativeStackNavigator();
 // const Drawer = createDrawerNavigator();
 
@@ -60,6 +61,11 @@ function App() {
           <Stack.Screen
             name="MyProfile"
             component={MyProfile}
+            options={{ headerShown: true }}
+          />
+          <Stack.Screen
+            name="Events"
+            component={Events}
             options={{ headerShown: true }}
           />
           {/* <Stack.Screen

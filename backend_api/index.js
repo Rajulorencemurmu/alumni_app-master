@@ -125,14 +125,17 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+     // Log userName
+     console.log("userName:", user.name);
+
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, email: user.email , name: user.name },//including user name as well
       "your_secret_key",
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token, name: user.name });
   } catch (error) {
     console.error("Error in login:", error);
     res.status(500).json({ message: "Internal Server Error" });
