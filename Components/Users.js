@@ -9,8 +9,12 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../userContext";
 import BASE_URL from "../apiConfig";
+import { useNavigation } from "@react-navigation/native";
+import Profile_Screen from "../ProfileScreen/Profile_Screen";
 
 const Users = ({ item }) => {
+  const navigation = useNavigation();
+  
   const [requestSent, setRequestSent] = useState(false);
   const { userId, setUserId } = useContext(UserType);
   const [friendRequests, setFriendRequests] = useState([]);
@@ -87,7 +91,7 @@ const Users = ({ item }) => {
           flexDirection: "row",
           alignItems: "center",
           marginVertical: 10,
-        }}
+        }} onPress={() => navigation.navigate('Profile')}
       >
         <View>
           <Image

@@ -61,6 +61,7 @@ const ChatMessageScreen = () => {
   };
 
   const fetchMessages = async () => {
+    console.log('I am inside chatmessagescreen.js');
     try {
       const response = await fetch(
         `${BASE_URL}/messages/${userId}/${recipientId}`
@@ -72,10 +73,10 @@ const ChatMessageScreen = () => {
         return;
       }
       const data = await response.json();
-      console.log("Full response:", data);
+      // console.log("Full response:", data);
       if (response.ok) {
         console.log("Is response OK?", response.ok);
-        console.log("data=", data);
+        // console.log("data=", data);
         setMessages(data);
       } else {
         console.log("error showing messags", response.status.message);
@@ -98,7 +99,7 @@ const ChatMessageScreen = () => {
         );
 
         const data = await response.json();
-        console.log("Fetched messages after fetchingrecipientdata:", data); // Add this log
+        // console.log("Fetched messages after fetchingrecipientdata:", data); // Add this log
         setrecipientData(data);
       } catch (error) {
         console.log("error retrieving details", error);
@@ -159,7 +160,7 @@ const ChatMessageScreen = () => {
     }
   };
 
-  console.log("Message=", selectedMessages);
+  // console.log("Message=", selectedMessages);
 
   const deleteMessages = async (messageIds) => {
     try {

@@ -19,7 +19,6 @@ import { useContext } from "react";
 
 
 const Home_Screen = () => {
-  
 
   const { name,userId,setUserId,logout } = useContext(UserType);
   console.log('userId in home screen.js',userId)

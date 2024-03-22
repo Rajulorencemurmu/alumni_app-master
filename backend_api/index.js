@@ -37,7 +37,8 @@ app.listen(port, () => {
 
 //User Routes
 app.post("/register", async (req, res) => {
-  const { name, email, password, number, image } = req.body;
+  const { name, email, password, number, image, occupation, workingPlace } =
+    req.body; // Destructure occupation and workingPlace from req.body
   console.log("Request payload:", req.body);
 
   console.log("Image in backend=", image);
@@ -48,17 +49,22 @@ app.post("/register", async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("after try");
-    // Check if the number is provided and not null
+
+    // Create a new user object with occupation-specific fields
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      // number:number,
-      ...(number !== undefined ? { number } : {}),
-      image: image,
+      number,
+      image,
+      occupation,
+      ...(occupation === "Alumni" && { workingPlace }), // Include workingPlace only if occupation is Alumni
       location: {
         type: "Point",
-        coordinates: [req.body.location.coordinates[0], req.body.location.coordinates[1]],
+        coordinates: [
+          req.body.location.coordinates[0],
+          req.body.location.coordinates[1],
+        ],
       },
     });
 
@@ -86,7 +92,6 @@ app.post("/register", async (req, res) => {
   console.log("I am here NOW");
 });
 
-
 //login route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -100,23 +105,28 @@ app.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-   
 
-     // Get the user's location from the database
-     const location = await User.findOne({ username: user.username }, { location: 1 });
+    // Get the user's location from the database
+    const location = await User.findOne(
+      { username: user.username },
+      { location: 1 }
+    );
 
-     // Update the user's location in the database
-     await User.updateOne(
-       { username: user.username },
-       {
-         $set: {
-           location: {
-             type: "Point",
-             coordinates: [location.location.coordinates[0], location.location.coordinates[1]],
-           },
-         },
-       }
-     );
+    // Update the user's location in the database
+    await User.updateOne(
+      { username: user.username },
+      {
+        $set: {
+          location: {
+            type: "Point",
+            coordinates: [
+              location.location.coordinates[0],
+              location.location.coordinates[1],
+            ],
+          },
+        },
+      }
+    );
 
     // Check if the password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -125,38 +135,43 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-     // Log userName
-     console.log("userName:", user.name);
+    // Log userName
+    console.log("userName:", user.name);
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email , name: user.name },//including user name as well
+      { userId: user._id, email: user.email, name: user.name }, //including user name as well
       "your_secret_key",
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Login successful", token, name: user.name });
+    res
+      .status(200)
+      .json({ message: "Login successful", token, name: user.name });
   } catch (error) {
     console.error("Error in login:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-
 //endpoint to access all users currently logged in
-app.get("/users/:userId", (req, res) => {
+app.get("/users/:userId", async (req, res) => {
   const loggedInUserId = req.params.userId;
   console.log("logged in user in index.js=", loggedInUserId);
 
-  User.find({ _id: { $ne: loggedInUserId } })
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch((err) => {
-      console.log("Error retrieving users", err);
-      res.status(500).json({ message: "Error retrieving users" });
+  try {
+    // Find users excluding the logged-in user and filter by occupation
+    const users = await User.find({
+      _id: { $ne: loggedInUserId },
+      occupation: { $exists: true, $ne: null },
     });
+    res.status(200).json(users);
+  } catch (err) {
+    console.log("Error retrieving users", err);
+    res.status(500).json({ message: "Error retrieving users" });
+  }
 });
+
 
 //endpoint to send a request to a user
 app.post("/friendRequest", async (req, res) => {
@@ -189,6 +204,7 @@ app.post("/friendRequest", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 // Function to check if a string is a valid ObjectId
 function isValidObjectId(id) {
   return /^[0-9a-fA-F]{24}$/.test(id);
@@ -224,11 +240,9 @@ app.post("/friendRequest/accept", async (req, res) => {
     const { senderId, recipientId } = req.body;
 
     if (!senderId || !recipientId) {
-      return res
-        .status(400)
-        .json({
-          message: "SenderId and RecipientId are required in the request body",
-        });
+      return res.status(400).json({
+        message: "SenderId and RecipientId are required in the request body",
+      });
     }
 
     const sender = await User.findById(senderId);
@@ -293,6 +307,7 @@ app.get("/user/:userId", async (req, res) => {
   }
 });
 
+
 //sending messages
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -305,7 +320,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-
 
 //endpoint to post Messages and store it in the backend
 app.post("/messages", upload.single("imageFile"), async (req, res) => {
@@ -328,7 +342,6 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
     //  if (senderId !== req.user.userId) {
     //   return res.status(400).json({ error: "You are not allowed to send messages on behalf of others" });
     // }
-
 
     const newMessage = new Message({
       senderId,
@@ -358,9 +371,6 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
   }
 });
 
-
-
-
 //endpoint to fetch the messages between two users in the chatRoom
 app.get("/messages/:senderId/:recipientId", async (req, res) => {
   try {
@@ -376,8 +386,10 @@ app.get("/messages/:senderId/:recipientId", async (req, res) => {
       recipientObjectId,
       query: {
         $or: [
-          { senderId: senderObjectId}, {recipientId: recipientObjectId },
-          { senderId: recipientObjectId}, {recipientId: senderObjectId },
+          { senderId: senderObjectId },
+          { recipientId: recipientObjectId },
+          { senderId: recipientObjectId },
+          { recipientId: senderObjectId },
         ],
       },
     });
@@ -385,9 +397,9 @@ app.get("/messages/:senderId/:recipientId", async (req, res) => {
     //correct one
     const messages = await Message.find({
       $or: [
-                { senderId: senderObjectId ,  recipientId: recipientObjectId },
-               { senderId: recipientObjectId, recipientId: senderObjectId },
-            ],
+        { senderId: senderObjectId, recipientId: recipientObjectId },
+        { senderId: recipientObjectId, recipientId: senderObjectId },
+      ],
     })
       .populate("senderId", "_id name")
       .populate("recipientId", "_id name");
@@ -466,9 +478,7 @@ app.get("/friends/:userId", (req, res) => {
   }
 });
 
-
-
-//location 
+//location
 // app.post("/api/location", async (req, res) => {
 //   const { username, password, location } = req.body;
 
@@ -511,10 +521,6 @@ app.get("/friends/:userId", (req, res) => {
 //   }
 // });
 
-
-
-
-
 app.post("/api/location", async (req, res) => {
   const { currentUserId } = req.body;
   console.log("current user in Maps of index.js=", currentUserId);
@@ -533,7 +539,10 @@ app.post("/api/location", async (req, res) => {
     // Convert the locations to the format required by the react-native-maps library
     const formattedLocations = locations.map((location) => ({
       type: "Point",
-      coordinates: [location.location.coordinates[0], location.location.coordinates[1]],
+      coordinates: [
+        location.location.coordinates[0],
+        location.location.coordinates[1],
+      ],
     }));
 
     // Add the user's location to the list of locations

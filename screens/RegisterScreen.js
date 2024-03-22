@@ -1,5 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -10,33 +8,44 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Image,
-  Platform,ActivityIndicator,
+  Platform,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import BASE_URL from '../apiConfig'
-import * as Location from 'expo-location';
-
-// import {Picker} from '@react-native-picker/picker';
-
-// let Picker;
-// if (Platform.OS === 'android' || Platform.OS === 'ios') {
-//   Picker = require('@react-native-picker/picker').Picker;
-// } else {
-//   Picker = require('react-native').Picker;
-// }
+import BASE_URL from "../apiConfig";
+import * as Location from "expo-location";
+import { Picker } from "@react-native-picker/picker"; // Import Picker component
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const occupations = ["Student", "Professor", "Alumni"];
 
+const batches = [
+  "2010-2014",
+  "2011-2015",
+  "2012-2016",
+  "2013-2017",
+  "2014-2018",
+  "2015-2019",
+  "2016-2020",
+  "2017-2021",
+  "2018-2022",
+  "2019-2023",
+  "2020-2024",
+];
+
 const RegisterScreen = () => {
-  const [loading, setLoading] = useState(false); // State variable to manage loading
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [number, setNumber] = useState("");
   const [image, setImage] = useState(null);
-  // const [occupation, setOccupation] = useState("Student");
-  // const [workingPlace, setWorkingPlace] = useState("");
-
+  const [occupation, setOccupation] = useState("Student");
+  const [workingPlace, setWorkingPlace] = useState("");
+  const [batch, setBatch] = useState(""); // Add state for batch selection
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -53,9 +62,8 @@ const RegisterScreen = () => {
     })();
   }, []);
 
-  const handleRegister = async() => {
-
-    setLoading(true); // Set loading to true before making the axios request
+  const handleRegister = async () => {
+    setLoading(true);
     let location = await Location.getCurrentPositionAsync({});
 
     const user = {
@@ -64,22 +72,19 @@ const RegisterScreen = () => {
       password: password,
       number: number,
       image: image,
+      occupation: occupation,
+      ...(occupation === "Alumni" && { workingPlace }), // Include working place for alumni
+      ...(occupation === "Alumni" && { batch }), // Include batch for alumni
       location: {
         type: "Point",
         coordinates: [location.coords.longitude, location.coords.latitude],
       },
     };
-    // console.log("Image=", image);
-    // console.log("User object:", user);
-    console.log('location is',location);
 
-    // send a POST request to the backend API to register the user
     axios
       .post(`${BASE_URL}/register`, user)
-      // .post("http://192.168.137.195:8000/register",user)
       .then((response) => {
         console.log("Server response", response);
-
         Alert.alert(
           "Registration successful",
           "You have been registered Successfully"
@@ -89,21 +94,20 @@ const RegisterScreen = () => {
         setPassword("");
         setNumber("");
         setImage(null);
-
-        
-
+        setWorkingPlace("");
+        setBatch(""); // Clear batch selection after registration
         navigation.navigate("Login_Screen");
       })
       .catch((error) => {
         console.log("Axios Error", error);
-        console.log("Axios Error Response", error.response); // Log the full error response
+        console.log("Axios Error Response", error.response);
         Alert.alert(
           "Registration Error",
           "An error occurred while registering"
         );
       })
       .finally(() => {
-        setLoading(false); // Set loading to false after axios request completes
+        setLoading(false);
       });
   };
 
@@ -118,10 +122,10 @@ const RegisterScreen = () => {
 
       console.log("Image picked is=", result);
 
-      if (!result.canceled) {
+      if (!result.cancelled) {
         const pickedImageUri = result.assets[0].uri;
         setImage(pickedImageUri);
-        console.log("Final image=",pickedImageUri);
+        console.log("Final image=", pickedImageUri);
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -129,92 +133,143 @@ const RegisterScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView behavior="position" enabled>
-        <Text style={styles.title4}>Register Here</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your Name*"
-          onChangeText={setName}
-          value={name}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email*"
-          onChangeText={setEmail}
-          value={email}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your Password*"
-          onChangeText={setPassword}
-          value={password}
-          autoCapitalize="none"
-          secureTextEntry
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setNumber}
-          value={number}
-          placeholder="Your Phone number"
-          keyboardType="numeric"
-        />
-        {/* <Text style={styles.subtitle}>Select Occupation:</Text>
-        <Picker
-          selectedValue={occupation}
-          style={{ height: 50, width: "100%", marginTop: 10 }}
-          onValueChange={(itemValue) => setOccupation(itemValue)}
-        >
-          {occupations.map((occ) => (
-            <Picker.Item key={occ} label={occ} value={occ} />
-          ))}
-        </Picker>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ScrollView>
+        <View style={styles.container}>
+          {/* <KeyboardAvoidingView behavior="position" enabled> */}
+            <View
+              style={{
+                height: 280,
+                width: 280,
+                borderRadius: 150,
+                backgroundColor: "#DCFFB7",
+                position: "absolute",
+                left: -130,
+                top: -50,
+              }}
+            ></View>
+            <View style={{display:'flex',justifyContent:'center',alignItems:'center',paddingTop:25}}>
+            <Text style={styles.title01}>Register</Text>
+            <Text style={styles.title4}>Here</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your Name*"
+              onChangeText={setName}
+              value={name}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email*"
+              onChangeText={setEmail}
+              value={email}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your Password*"
+              onChangeText={setPassword}
+              value={password}
+              autoCapitalize="none"
+              secureTextEntry
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setNumber}
+              value={number}
+              placeholder="Your Phone number"
+              keyboardType="numeric"
+            />
+            <Text style={styles.subtitle}>Select Occupation:</Text>
+            <Picker
+              selectedValue={occupation}
+              style={{ height: 50, width: "100%", marginTop: 10 }}
+              onValueChange={(itemValue) => setOccupation(itemValue)}
+            >
+              {occupations.map((occ) => (
+                <Picker.Item key={occ} label={occ} value={occ} />
+              ))}
+            </Picker>
 
-        {occupation === "Alumni" && (
-          <TextInput
-            style={styles.input}
-            onChangeText={setWorkingPlace}
-            value={workingPlace}
-            placeholder="Enter Working Place or Company"
-            autoCapitalize="none"
-          />
-        )} */}
+            {occupation === "Student" && (
+              <>
+                <Text style={styles.subtitle}>Select Batch:</Text>
+                <Picker
+                  selectedValue={batch}
+                  style={{ height: 50, width: "100%", marginTop: 10 }}
+                  onValueChange={(itemValue) => setBatch(itemValue)}
+                >
+                  <Picker.Item label="Select Batch" value="" />
+                  {batches.map((b) => (
+                    <Picker.Item key={b} label={b} value={b} />
+                  ))}
+                </Picker>
+              </>
+            )}
 
-        <TouchableOpacity style={styles.pickimgbtn} onPress={pickImage}>
-          <Text style={styles.Pickimg}>Pick Image</Text>
-        </TouchableOpacity>
-        {image && (
-          <Image
-            source={{ uri: image }}
-            style={{ width: 100, height: 100, marginTop: 10 }}
-          />
-        )}
+            {occupation === "Alumni" && (
+              <>
+                <Text style={styles.subtitle}>Select Batch:</Text>
+                <Picker
+                  selectedValue={batch}
+                  style={{ height: 50, width: "100%", marginTop: 10 }}
+                  onValueChange={(itemValue) => setBatch(itemValue)}
+                >
+                  <Picker.Item label="Select Batch" value="" />
+                  {batches.map((b) => (
+                    <Picker.Item key={b} label={b} value={b} />
+                  ))}
+                </Picker>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setWorkingPlace}
+                  value={workingPlace}
+                  placeholder="Enter Working Place or Company"
+                  autoCapitalize="none"
+                />
+              </>
+            )}
 
-          {/* for loading screen */}
-        {loading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="tomato" />
-          </View>
-        )}
+            <TouchableOpacity style={styles.pickimgbtn} onPress={pickImage}>
+              <Text style={styles.Pickimg}>Pick Image</Text>
+            </TouchableOpacity>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 100, height: 100, marginTop: 10 }}
+              />
+            )}
 
-        <TouchableOpacity
-          style={styles.loginwithpass}
-          onPress={() => {
-            handleRegister();
-          }}
-        >
-          <Text style={styles.otpButton}>Submit</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-      <TouchableOpacity
-        style={styles.googleButton}
-        onPress={() => navigation.navigate("Login_Screen")}
-      >
-        <Text style={styles.googleButtonText}>Sign In</Text>
-      </TouchableOpacity>
-    </View>
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="tomato" />
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={styles.loginwithpass}
+              onPress={() => {
+                handleRegister();
+              }}
+            >
+              <Text style={styles.otpButton}>Submit</Text>
+            </TouchableOpacity>
+          {/* </KeyboardAvoidingView> */}
+          <View
+              style={{
+                height: 250,
+                width: 250,
+                borderRadius: 150,
+                backgroundColor: "#7BD3EA",
+                // position: "absolute",
+                // top: 50,
+                left:180,
+              }}
+            ></View>
+        </View>
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -222,7 +277,7 @@ export default RegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 2,
     backgroundColor: "#fff",
     paddingHorizontal: 30,
     paddingTop: 50,
@@ -247,13 +302,18 @@ const styles = StyleSheet.create({
     fontSize: 38,
     color: "#000",
   },
+  title01:{
+    fontSize: 40,
+    color: "tomato",
+    fontWeight: "bold",
+  },
   title4: {
     fontSize: 25,
     color: "#000",
     fontWeight: "bold",
-    marginTop: 60,
-    marginLeft: 60,
-    paddingBottom: 40,
+    // marginTop: 60,
+    // marginLeft: 60,
+    // paddingBottom: 40,
   },
   subtitle: {
     fontSize: 18,
@@ -272,13 +332,14 @@ const styles = StyleSheet.create({
     width: 100,
     alignItems: "center",
     alignSelf: "center",
-    borderRadius: 12,
-    backgroundColor: "tomato",
+    borderRadius: 20,
+    // backgroundColor: "tomato",
+    borderWidth:1,
     padding: 7,
     marginTop: 8,
   },
   Pickimg: {
-    color: "white",
+    // color: "white",
     fontWeight: "bold",
   },
   otpButton: {
@@ -287,7 +348,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   otpButtonText: {
-    color: "#fff",
+    // color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
@@ -297,6 +358,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
+    // borderWidth:1,
     // padding:10,
     marginTop: 20,
     width: 200,
