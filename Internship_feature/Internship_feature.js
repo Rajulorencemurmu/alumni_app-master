@@ -1,19 +1,53 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Button,
+} from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const EventsManager = () => {
   const [events, setEvents] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', time: '', location: '' });
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    date: "",
+    time: "",
+    location: "",
+  });
+
+  // Add state for date and time pickers
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
+  const handleDateConfirm = (date) => {
+    setNewEvent({ ...newEvent, date: date.toISOString().split("T")[0] });
+    setDatePickerVisibility(false);
+  };
+
+  const handleTimeConfirm = (time) => {
+    setNewEvent({ ...newEvent, time: time.toLocaleTimeString() });
+    setTimePickerVisibility(false);
+  };
 
   const handleAddEvent = () => {
-    if (!newEvent.title || !newEvent.date || !newEvent.time || !newEvent.location) {
-      alert('Please fill in all fields.');
+    if (
+      !newEvent.title ||
+      !newEvent.date ||
+      !newEvent.time ||
+      !newEvent.location
+    ) {
+      alert("Please fill in all fields.");
       return;
     }
 
     setEvents([...events, { ...newEvent, id: events.length + 1 }]);
-    setNewEvent({ title: '', date: '', time: '', location: '' });
+    setNewEvent({ title: "", date: "", time: "", location: "" });
     setIsModalVisible(false);
   };
 
@@ -27,17 +61,18 @@ const EventsManager = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Events Manager</Text>
-      
-      {/* <TouchableOpacity> */}
+      {/* <Text style={styles.header}>Events Manager</Text> */}
+
       <FlatList
         data={events}
         renderItem={renderEvent}
         keyExtractor={(item) => item.id.toString()}
       />
-      {/* </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addButton}>
+      <TouchableOpacity
+        onPress={() => setIsModalVisible(true)}
+        style={styles.addButton}
+      >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
 
@@ -51,30 +86,50 @@ const EventsManager = () => {
             value={newEvent.title}
             onChangeText={(text) => setNewEvent({ ...newEvent, title: text })}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Date"
-            value={newEvent.date}
-            onChangeText={(text) => setNewEvent({ ...newEvent, date: text })}
+          {/* Date Picker */}
+          <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", paddingBottom:8,color:'tomato'}}>
+              {newEvent.date ? newEvent.date : "Select Date"}
+            </Text>
+          </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleDateConfirm}
+            onCancel={() => setDatePickerVisibility(false)}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Time"
-            value={newEvent.time}
-            onChangeText={(text) => setNewEvent({ ...newEvent, time: text })}
+
+          {/* Time Picker */}
+          <TouchableOpacity onPress={() => setTimePickerVisibility(true)}>
+            <Text style={{ fontSize: 18, fontWeight: "bold",paddingBottom:8,color:'tomato' }}>
+              {newEvent.time ? newEvent.time : "Select Time"}
+            </Text>
+          </TouchableOpacity>
+          
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            onConfirm={handleTimeConfirm}
+            onCancel={() => setTimePickerVisibility(false)}
           />
+
           <TextInput
             style={styles.input}
             placeholder="Location"
             value={newEvent.location}
-            onChangeText={(text) => setNewEvent({ ...newEvent, location: text })}
+            onChangeText={(text) =>
+              setNewEvent({ ...newEvent, location: text })
+            }
           />
 
-          <Button title="Add Event" onPress={handleAddEvent} />
-          {/* <Button title="X" onPress={() => setIsModalVisible(false)} /> */}
-          <TouchableOpacity  onPress={() => setIsModalVisible(false)} style={styles.addButton1}>
-        <Text style={styles.addButtonText1}>x</Text>
-        </TouchableOpacity>
+          <View style={{ flexDirection: "row", gap: 40 }}>
+            <Button title="Add Event" onPress={handleAddEvent} />
+            <Button
+              title="Cancel"
+              color="#841584"
+              onPress={() => setIsModalVisible(false)}
+            />
+          </View>
         </View>
       </Modal>
     </View>
@@ -88,70 +143,57 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   eventItem: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
+    borderBottomWidth:1,
+    borderBottomColor:'lightgray',
   },
   eventTitle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 5,
   },
   addButton: {
-    backgroundColor: 'tomato',
+    backgroundColor: "tomato",
     padding: 10,
     // marginTop: 60,
-    width:60,
-    height:60,
-    borderRadius:50,
-    alignSelf:'flex-end',
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    alignSelf: "flex-end",
   },
   addButtonText: {
-    color: 'white',
-    fontWeight:'bold',
-    fontSize:24,
-    textAlign: 'center',
-    marginTop:5,
-  },
-  addButton1: {
-    backgroundColor: 'tomato',
-    padding: 10,
-    marginTop: 60,
-    width:60,
-    height:60,
-    borderRadius:50,
-    alignSelf:'flex-end',
-  },
-  addButtonText1: {
-    color: 'white',
-    // fontWeight:'bold',
-    fontSize:24,
-    textAlign: 'center',
-    marginTop:5,
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 24,
+    textAlign: "center",
+    marginTop: 5,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: "bold",
     marginBottom: 20,
+    color:'darkgreen'
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
-    width: '80%',
+    width: "80%",
   },
 });
 
