@@ -10,6 +10,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import FriendRequest from "../Components/FriendRequests";
 import Home_Screen from "../Home_Screen/Home_Screen";
 import LoadingIndicator from "../LoadingIndicator";
+import EventsManager from "../Events/EventsManager";
 
 function HomeScreenComponent({ navigation }) {
   return <Home_Screen />;
@@ -23,8 +24,8 @@ function SettingsScreen({ navigation }) {
   return <Settings_feature />;
 }
 
-function InternshipsScreen({ navigation }) {
-  return <Internship_feature />;
+function EventManager({ navigation }) {
+  return <EventsManager />;
 }
 
 function ChatScreen({ navigation }) {
@@ -45,8 +46,8 @@ export default function HomeScreen() {
             iconName = focused ? "setting" : "setting"; // Corrected name
           } else if (route.name === "Maps") {
             iconName = focused ? "enviromento" : "enviromento";
-          } else if (route.name === "Internships") {
-            iconName = focused ? "database" : "database";
+          } else if (route.name === "Events") {
+            iconName = focused ? "calendar" : "calendar";
           } else if (route.name === "Chat") {
             iconName = focused ? "message1" : "message1";
           }
@@ -60,7 +61,7 @@ export default function HomeScreen() {
       <Tab.Screen name="Home" component={HomeScreenComponent} />
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Maps" component={MapsScreen} />
-      <Tab.Screen name="Internships" component={InternshipsScreen} />
+      <Tab.Screen name="Events" component={EventManager} />
       {/* <Tab.Screen name="Settings" component={SettingsScreen} /> */}
       {/* <Tab.Screen name="FriendRequest" component={FriendRequest} /> */}
     </Tab.Navigator>

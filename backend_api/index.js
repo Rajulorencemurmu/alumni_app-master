@@ -13,6 +13,9 @@ app.use(passport.initialize());
 
 const User = require("./models/users");
 const Message = require("./models/message");
+const Event =require("./models/events")
+// =========================
+
 const bcrypt = require("bcrypt");
 
 mongoose
@@ -568,3 +571,34 @@ app.post("/api/location", async (req, res) => {
     res.status(500).json({ message: "Server error from API_LOCATION" });
   }
 });
+
+
+// API endpoint to add a new event
+app.post("/api/events", async (req, res) => {
+  const { title, date, time, location } = req.body;
+
+  if (!title || !date || !time || !location) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const newEvent = new Event({ title, date, time, location });
+    await newEvent.save();
+    res.status(201).json(newEvent);
+    console.log('successfully saved events into db',newEvent);
+  } catch (error) {
+    console.error("Error creating event: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// API endpoint to get all events
+// app.get("/api/events", async (req, res) => {
+//   try {
+//     console.log('I am now fetching the details of api events');
+//     const events = await Event.find();
+//     res.json(events);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });

@@ -10,6 +10,8 @@ import {
   Button,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Fontisto } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const EventsManager = () => {
   const [events, setEvents] = useState([]);
@@ -49,6 +51,7 @@ const EventsManager = () => {
     setEvents([...events, { ...newEvent, id: events.length + 1 }]);
     setNewEvent({ title: "", date: "", time: "", location: "" });
     setIsModalVisible(false);
+    console.log('Your details are here=',newEvent)
   };
 
   const renderEvent = ({ item }) => (
@@ -88,7 +91,8 @@ const EventsManager = () => {
           />
           {/* Date Picker */}
           <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
-            <Text style={{ fontSize: 18, fontWeight: "bold", paddingBottom:8,color:'tomato'}}>
+            <Text style={{ fontSize: 18,paddingBottom:8}}>
+          <Fontisto name="date" size={24} color="black" />
               {newEvent.date ? newEvent.date : "Select Date"}
             </Text>
           </TouchableOpacity>
@@ -101,7 +105,8 @@ const EventsManager = () => {
 
           {/* Time Picker */}
           <TouchableOpacity onPress={() => setTimePickerVisibility(true)}>
-            <Text style={{ fontSize: 18, fontWeight: "bold",paddingBottom:8,color:'tomato' }}>
+            <Text style={{ fontSize: 18,paddingBottom:8}}>
+            <AntDesign name="clockcircleo" size={24} color="black" />
               {newEvent.time ? newEvent.time : "Select Time"}
             </Text>
           </TouchableOpacity>
@@ -185,7 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
-    color:'darkgreen'
+    // color:'tomato'
   },
   input: {
     borderWidth: 1,
