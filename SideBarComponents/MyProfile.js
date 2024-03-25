@@ -45,10 +45,19 @@ export default MyProfile
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor:'lightgrey'
-    // justifyContent: 'center',
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   text: {
     fontSize: 16,
@@ -56,8 +65,10 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 200,
-    height: 200,
-    borderRadius: 100,
-    marginTop: 20,
+        height: 200,
+        borderRadius: 100,
+        marginTop: 20,
+        justifyContent:'center',
+        alignSelf:'center'
   },
 });

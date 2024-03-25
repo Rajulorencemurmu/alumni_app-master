@@ -13,16 +13,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useRoute } from "@react-navigation/native";
 import { UserType } from "../userContext";
 import { useContext } from "react";
 
 
 const Home_Screen = () => {
-
-  const { name,userId,setUserId,logout } = useContext(UserType);
+  const { userId,setUserId,logout } = useContext(UserType);
   console.log('userId in home screen.js',userId)
-  console.log('userName in home screen.js',name);
+
+  const {route} = useRoute();
+
+  // const {user}  = route.params;
+  // const {name}=user;
+  // console.log('Name in home screeen is',user);
 
   const navigation = useNavigation();
   const drawerRef = useRef(null);
@@ -49,7 +53,9 @@ const Home_Screen = () => {
           {
             text: "Yes",
             onPress: async () => {
-              await handleLogout(); // Call the logout function
+              await AsyncStorage.removeItem('authToken');
+              logout();
+              navigation.navigate('Login_Screen');
             },
           },
         ],
@@ -101,7 +107,7 @@ const Home_Screen = () => {
 
   useFocusEffect(() => {
     navigation.setOptions({
-      headerTitle: name?name:'Home',
+      headerTitle: 'Home',
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {

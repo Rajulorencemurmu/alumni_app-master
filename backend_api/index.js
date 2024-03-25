@@ -37,7 +37,7 @@ app.listen(port, () => {
 
 //User Routes
 app.post("/register", async (req, res) => {
-  const { name, email, password, number, image, occupation, workingPlace } =
+  const { name, email, password, number, image, occupation,batch, workingPlace } =
     req.body; // Destructure occupation and workingPlace from req.body
   console.log("Request payload:", req.body);
 
@@ -59,6 +59,9 @@ app.post("/register", async (req, res) => {
       image,
       occupation,
       ...(occupation === "Alumni" && { workingPlace }), // Include workingPlace only if occupation is Alumni
+      ...(occupation === "Alumni" && { batch }), // Include batch for alumni
+      ...(occupation === "Student" && {batch}),// include batch for student as well
+      batch,
       location: {
         type: "Point",
         coordinates: [

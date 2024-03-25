@@ -75,6 +75,7 @@ const RegisterScreen = () => {
       occupation: occupation,
       ...(occupation === "Alumni" && { workingPlace }), // Include working place for alumni
       ...(occupation === "Alumni" && { batch }), // Include batch for alumni
+      ...(occupation === "Student" && {batch}),// include batch for student as well
       location: {
         type: "Point",
         coordinates: [location.coords.longitude, location.coords.latitude],

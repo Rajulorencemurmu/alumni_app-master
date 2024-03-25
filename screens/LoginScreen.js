@@ -18,7 +18,7 @@ import { decode as base64decode } from "base-64";
 import BASE_URL from "../apiConfig";
 
 
-const LoginScreen = () => {
+const LoginScreen = ({item}) => {
   global.atob = base64decode;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,22 +28,34 @@ const LoginScreen = () => {
   const { setUserId } = useContext(UserType);
 
   //to logged in from before
-   useEffect(() => {
-     const checkLoginStatus=async()=>{
-      try {
-         const token=await AsyncStorage.getItem('authToken');
-         if(token){
-            navigation.replace('Home_Screen');
-         }
-         else{
-            //
-         }
-      } catch (error) {
-         console.log(error);
+ // Function to retrieve token from AsyncStorage
+const getTokenFromStorage = async () => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    return token;
+  } catch (error) {
+    console.log('Error retrieving token:', error);
+    return null;
+  }
+};
+
+useEffect(() => {
+  const checkLoginStatus = async () => {
+    try {
+      const token = await getTokenFromStorage();
+      if (token) {
+        // Token found, navigate to Home_Screen
+        navigation.replace('Home_Screen');
+      } else {
+        // Token not found, continue with login
       }
-   }
-   checkLoginStatus();
-   }, [])
+    } catch (error) {
+      console.log('Error checking login status:', error);
+    }
+  };
+
+  checkLoginStatus();
+}, []);
 
   // ...
 
@@ -76,12 +88,23 @@ const LoginScreen = () => {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
 
           if (decodedToken.userId) {
+            // Extract user name from the decoded token
+            const userName = decodedToken.name;
+
             // Set the user ID in the context after successful login
             setUserId(decodedToken.userId);
             console.log("UserId set to:", decodedToken.userId);
 
+             // Generate route parameters with the user name
+              const routeParameters = {
+                user: {
+                  id: decodedToken.userId,
+                  name: userName,
+                },
+              };
+
             AsyncStorage.setItem("authToken", token);
-            navigation.navigate("Home_Screen");
+            navigation.navigate("Home_Screen",routeParameters);
           } else {
             console.log("Error: userId not found in the decoded token");
             Alert.alert("Login Error", "Invalid response from the server");

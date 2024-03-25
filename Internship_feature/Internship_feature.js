@@ -1,126 +1,158 @@
-import React, { useState, useEffect} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 
-const Internship_feature = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
-  const [loading, setLoading] = useState(false);
+const EventsManager = () => {
+  const [events, setEvents] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newEvent, setNewEvent] = useState({ title: '', date: '', time: '', location: '' });
 
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      const options = {
-        method: 'GET',
-        url: 'https://jsearch.p.rapidapi.com/search',
-        params: {
-          query: searchTerm,
-          page: '1',
-          num_pages: '1'
-        },
-        headers: {
-          'X-RapidAPI-Key': 'c61f39fcebmshf48b9b28697df2ep11552ajsnf2995c2b3808',
-          'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
-        }
-      };
-
-      const response = await axios.request(options);
-      // console.log(response.data)
-      setSearchResult(response.data);
-      // console.log('Search result=',searchResult);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+  const handleAddEvent = () => {
+    if (!newEvent.title || !newEvent.date || !newEvent.time || !newEvent.location) {
+      alert('Please fill in all fields.');
+      return;
     }
-    
+
+    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setNewEvent({ title: '', date: '', time: '', location: '' });
+    setIsModalVisible(false);
   };
-  // Inside the component function
-useEffect(() => {
-  console.log('Search result=', searchResult);
-}, [searchResult]);
+
+  const renderEvent = ({ item }) => (
+    <View style={styles.eventItem}>
+      <Text style={styles.eventTitle}>{item.title}</Text>
+      <Text>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+      <Text>{`Location: ${item.location}`}</Text>
+    </View>
+  );
 
   return (
-    <View>
-      <View style={styles.container}>
-        <Text style={styles.userName}>Hello Shubham</Text>
-        <Text style={styles.welcomeMessage}>Find your perfect job</Text>
-      </View>
-      <View style={styles.searchContainer}>
-        <View style={styles.searchWrapper}>
+    <View style={styles.container}>
+      <Text style={styles.header}>Events Manager</Text>
+      
+      {/* <TouchableOpacity> */}
+      <FlatList
+        data={events}
+        renderItem={renderEvent}
+        keyExtractor={(item) => item.id.toString()}
+      />
+      {/* </TouchableOpacity> */}
+
+      <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addButton}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
+
+      <Modal visible={isModalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Add Event</Text>
+
           <TextInput
-            style={styles.searchInput}
-            value={searchTerm}
-            onChangeText={(text) => setSearchTerm(text)}
-            placeholder="What are you looking for?"
+            style={styles.input}
+            placeholder="Event Title"
+            value={newEvent.title}
+            onChangeText={(text) => setNewEvent({ ...newEvent, title: text })}
           />
-        </View>
-        <TouchableOpacity onPress={handleClick}>
-          <EvilIcons name="search" size={35} color="black" style={styles.searchBtn} />
+          <TextInput
+            style={styles.input}
+            placeholder="Date"
+            value={newEvent.date}
+            onChangeText={(text) => setNewEvent({ ...newEvent, date: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Time"
+            value={newEvent.time}
+            onChangeText={(text) => setNewEvent({ ...newEvent, time: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Location"
+            value={newEvent.location}
+            onChangeText={(text) => setNewEvent({ ...newEvent, location: text })}
+          />
+
+          <Button title="Add Event" onPress={handleAddEvent} />
+          {/* <Button title="X" onPress={() => setIsModalVisible(false)} /> */}
+          <TouchableOpacity  onPress={() => setIsModalVisible(false)} style={styles.addButton1}>
+        <Text style={styles.addButtonText1}>x</Text>
         </TouchableOpacity>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={searchResult}
-          renderItem={({ item }) => {
-
-            console.log('Rendering item:', item); // Log the item here 
-
-            <View style={styles.itemContainer}>
-             <Text style={styles.itemTitle}>{item?.job_title || 'No title available'}</Text>
-            </View>
-          }}
-          keyExtractor={(item) => item.job_id}
-        />
-        
-      )}
+        </View>
+      </Modal>
     </View>
   );
 };
 
-export default Internship_feature;
-
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-  },
-  searchContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 40,
-    borderWidth: 0.5,
-    borderRadius: 25,
-  },
-  searchWrapper: {
     flex: 1,
-    marginRight: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    height: '100%',
+    padding: 20,
   },
-  searchInput: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 1,
-    marginLeft: 10,
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  searchBtn: {
-    width: 50,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  itemContainer: {
+  eventItem: {
+    backgroundColor: '#f0f0f0',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginVertical: 5,
+    borderRadius: 5,
   },
-  itemTitle: {
+  eventTitle: {
+    fontWeight: 'bold',
     fontSize: 16,
+    marginBottom: 5,
+  },
+  addButton: {
+    backgroundColor: 'tomato',
+    padding: 10,
+    // marginTop: 60,
+    width:60,
+    height:60,
+    borderRadius:50,
+    alignSelf:'flex-end',
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight:'bold',
+    fontSize:24,
+    textAlign: 'center',
+    marginTop:5,
+  },
+  addButton1: {
+    backgroundColor: 'tomato',
+    padding: 10,
+    marginTop: 60,
+    width:60,
+    height:60,
+    borderRadius:50,
+    alignSelf:'flex-end',
+  },
+  addButtonText1: {
+    color: 'white',
+    // fontWeight:'bold',
+    fontSize:24,
+    textAlign: 'center',
+    marginTop:5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+    width: '80%',
   },
 });
+
+export default EventsManager;

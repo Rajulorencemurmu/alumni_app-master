@@ -14,7 +14,7 @@ import Profile_Screen from "../ProfileScreen/Profile_Screen";
 
 const Users = ({ item }) => {
   const navigation = useNavigation();
-  
+
   const [requestSent, setRequestSent] = useState(false);
   const { userId, setUserId } = useContext(UserType);
   const [friendRequests, setFriendRequests] = useState([]);
@@ -45,9 +45,7 @@ const Users = ({ item }) => {
   useEffect(() => {
     const fetchUserFriends = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}/friends/${userId}`
-        );
+        const response = await fetch(`${BASE_URL}/friends/${userId}`);
         const data = await response.json();
         if (response.ok) {
           setUserFriends(data);
@@ -84,6 +82,10 @@ const Users = ({ item }) => {
     }
   };
 
+  const handleUserClick = () => {
+    navigation.navigate("Profile", { user: item }); // Navigate to Profile_Screen with user data
+  };
+
   return (
     <ScrollView>
       <Pressable
@@ -91,7 +93,11 @@ const Users = ({ item }) => {
           flexDirection: "row",
           alignItems: "center",
           marginVertical: 10,
-        }} onPress={() => navigation.navigate('Profile')}
+          borderBottomWidth: 1,
+          borderBottomColor: "#ccc",
+          padding: 10,
+        }}
+        onPress={handleUserClick} // Call handleUserClick when user is pressed
       >
         <View>
           <Image
@@ -112,13 +118,13 @@ const Users = ({ item }) => {
         {userFriends.includes(item._id) ? (
           <Pressable
             style={{
-              backgroundColor: "#82CD47",
+              backgroundColor: "#FB6D48",
               padding: 10,
               width: 105,
               borderRadius: 6,
             }}
           >
-            <Text style={{ textAlign: "center", color: "white" }}>Friends</Text>
+            <Text style={{ textAlign: "center", color: "white",fontWeight:'bold' }}>Friends</Text>
           </Pressable>
         ) : requestSent ||
           friendRequests.some((friend) => friend._id === item._id) ? (
@@ -130,7 +136,7 @@ const Users = ({ item }) => {
               borderRadius: 6,
             }}
           >
-            <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}>
+            <Text style={{ textAlign: "center", color: "white", fontSize: 13,fontWeight:'bold' }}>
               Request Sent
             </Text>
           </Pressable>
@@ -138,13 +144,13 @@ const Users = ({ item }) => {
           <Pressable
             onPress={() => sendFriendRequest(userId, item._id)}
             style={{
-              backgroundColor: "tomato",
+              backgroundColor: "#378CE7",
               padding: 10,
               borderRadius: 6,
               width: 105,
             }}
           >
-            <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}>
+            <Text style={{ textAlign: "center", color: "white", fontSize: 13,fontWeight:'bold' }}>
               Add Friend
             </Text>
           </Pressable>

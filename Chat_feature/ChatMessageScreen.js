@@ -62,6 +62,7 @@ const ChatMessageScreen = () => {
 
   const fetchMessages = async () => {
     console.log('I am inside chatmessagescreen.js');
+    console.log('recipient Id is=',recipientId);
     try {
       const response = await fetch(
         `${BASE_URL}/messages/${userId}/${recipientId}`

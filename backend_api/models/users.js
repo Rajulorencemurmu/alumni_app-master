@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     // Add occupation-specific fields
     workingPlace: { type: String }, // Only for Alumni
 
+    batches: [{ type: String }], // Array of batch strings
+
     friendRequests: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
