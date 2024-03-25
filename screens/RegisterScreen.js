@@ -22,18 +22,18 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const occupations = ["Student", "Professor", "Alumni"];
 
-const batches = [
-  "2010-2014",
-  "2011-2015",
-  "2012-2016",
-  "2013-2017",
-  "2014-2018",
-  "2015-2019",
-  "2016-2020",
-  "2017-2021",
-  "2018-2022",
-  "2019-2023",
-  "2020-2024",
+const batch = [
+  "2011-2014",
+  "2012-2015",
+  "2013-2016",
+  "2014-2017",
+  "2015-2018",
+  "2016-2019",
+  "2017-2020",
+  "2018-2021",
+  "2019-2022",
+  "2020-2023",
+  "2021-2024",
 ];
 
 const RegisterScreen = () => {
@@ -45,7 +45,7 @@ const RegisterScreen = () => {
   const [image, setImage] = useState(null);
   const [occupation, setOccupation] = useState("Student");
   const [workingPlace, setWorkingPlace] = useState("");
-  const [batch, setBatch] = useState(""); // Add state for batch selection
+  const [batches, setBatches] = useState([]); // Add state for batch selection
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -74,8 +74,9 @@ const RegisterScreen = () => {
       image: image,
       occupation: occupation,
       ...(occupation === "Alumni" && { workingPlace }), // Include working place for alumni
-      ...(occupation === "Alumni" && { batch }), // Include batch for alumni
-      ...(occupation === "Student" && {batch}),// include batch for student as well
+      // ...(occupation === "Alumni" && { batch }), // Include batch for alumni
+      // ...(occupation === "Student" && {batch}),// include batch for student as well
+      batches, // Include batch for all occupations
       location: {
         type: "Point",
         coordinates: [location.coords.longitude, location.coords.latitude],
@@ -96,7 +97,7 @@ const RegisterScreen = () => {
         setNumber("");
         setImage(null);
         setWorkingPlace("");
-        setBatch(""); // Clear batch selection after registration
+        setBatches(""); // Clear batch selection after registration
         navigation.navigate("Login_Screen");
       })
       .catch((error) => {
@@ -197,12 +198,12 @@ const RegisterScreen = () => {
               <>
                 <Text style={styles.subtitle}>Select Batch:</Text>
                 <Picker
-                  selectedValue={batch}
+                  selectedValue={batches}
                   style={{ height: 50, width: "100%", marginTop: 10 }}
-                  onValueChange={(itemValue) => setBatch(itemValue)}
+                  onValueChange={(itemValue) => setBatches(itemValue)}
                 >
                   <Picker.Item label="Select Batch" value="" />
-                  {batches.map((b) => (
+                  {batch.map((b) => (
                     <Picker.Item key={b} label={b} value={b} />
                   ))}
                 </Picker>
@@ -213,12 +214,12 @@ const RegisterScreen = () => {
               <>
                 <Text style={styles.subtitle}>Select Batch:</Text>
                 <Picker
-                  selectedValue={batch}
+                  selectedValue={batches}
                   style={{ height: 50, width: "100%", marginTop: 10 }}
-                  onValueChange={(itemValue) => setBatch(itemValue)}
+                  onValueChange={(itemValue) => setBatches(itemValue)}
                 >
                   <Picker.Item label="Select Batch" value="" />
-                  {batches.map((b) => (
+                  {batch.map((b) => (
                     <Picker.Item key={b} label={b} value={b} />
                   ))}
                 </Picker>
