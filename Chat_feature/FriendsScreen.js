@@ -52,6 +52,10 @@ const navigation=useNavigation()
     <ScrollView>
     <View style={styles.topbar}><Text style={styles.friendreq}></Text>
     </View>
+    {friendRequests.length === 0 ? (
+        <Text style={styles.noRequests}>No friend requests</Text>
+      ) : (
+
         <View style={{}}>
       {friendRequests.map((item, index) => (
         <FriendRequests
@@ -59,9 +63,10 @@ const navigation=useNavigation()
           item={item}
           friendRequests={friendRequests}
           setFriendRequests={setFriendRequests}
-        />
-      ))}
-      </View>
+          />
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -69,24 +74,10 @@ const navigation=useNavigation()
 export default FriendsScreen;
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor:'gray'
-  // },
-  // topbar: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 10,
-  //   borderBottomWidth: 2,
-  //   borderBottomColor: "#dddddd",
-  //   backgroundColor:'white'
-  // },
-  // friendreq: {
-  //   marginTop:50,
-  //   fontSize:20,
-  //   fontWeight:'bold',
-  //   marginLeft:50,
-  // },
- 
+  noRequests: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 18,
+    color: "gray",
+  },
 });

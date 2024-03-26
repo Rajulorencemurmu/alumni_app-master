@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,9 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Fontisto } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import BASE_URL from "../apiConfig";
+import LoadingIndicator from '../LoadingIndicator';
 
 const EventsManager = () => {
   const [events, setEvents] = useState([]);
@@ -22,6 +25,8 @@ const EventsManager = () => {
     time: "",
     location: "",
   });
+  const[fetchedEvents,setfetchedEvents]=useState([]);
+
 
   // Add state for date and time pickers
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -37,7 +42,7 @@ const EventsManager = () => {
     setTimePickerVisibility(false);
   };
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async() => {
     if (
       !newEvent.title ||
       !newEvent.date ||
@@ -48,11 +53,36 @@ const EventsManager = () => {
       return;
     }
 
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+   try {
+    const response=await axios.post(`${BASE_URL}/api/events`, newEvent);
+    console.log('Events added Successfully=',response.data);
+    setEvents([...events, { ...newEvent, id: response.data._id }]);
     setNewEvent({ title: "", date: "", time: "", location: "" });
     setIsModalVisible(false);
-    console.log('Your details are here=',newEvent)
+   } catch (error) {
+    console.log('Error sending data to database',error);
+   }
+
+    // setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    // setNewEvent({ title: "", date: "", time: "", location: "" });
+    // setIsModalVisible(false);
+    // console.log('Your details are here=',newEvent)
   };
+
+  useEffect(() => {
+    const fetchEvents=async()=>{
+      try{
+          const response=await axios.get(`${BASE_URL}/api/events`);
+          // setfetchedEvents(response.data);
+          setEvents(response.data)
+      }catch(error){
+        console.error('Error fetching events:', error);
+        // Handle error (e.g., show error message to user)
+      }
+    }
+    fetchEvents()
+  }, [])
+  
 
   const renderEvent = ({ item }) => (
     <View style={styles.eventItem}>
@@ -64,12 +94,10 @@ const EventsManager = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.header}>Events Manager</Text> */}
-
       <FlatList
         data={events}
         renderItem={renderEvent}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
       />
 
       <TouchableOpacity

@@ -2,7 +2,6 @@ import { React, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Chat_feature from "../Chat_feature/Chat_feature";
-import Internship_feature from "../Internship_feature/Internship_feature";
 import Settings_feature from "../Settings_feature/Settings_feature";
 import Maps_feature from "../Maps_feature/Maps_feature";
 import { View, Text } from "react-native";

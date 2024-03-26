@@ -12,7 +12,7 @@ const LoadingIndicator = ({ visible }) => {
 
   return (
     <View style={styles.loadingContainer}>
-      <ActivityIndicator color="tomato" />
+      <ActivityIndicator color="tomato" size="large"/>
     </View>
   );
 };

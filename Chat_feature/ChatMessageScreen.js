@@ -284,12 +284,13 @@ const ChatMessageScreen = () => {
                 resizeMode: "cover",
               }}
               source={{ uri: recipientData?.image }}
-              onPress={() => navigation.navigate('Profile')}
+              // onPress={() => navigation.navigate('Profile')}
             />
 
             <Text
               style={{ marginLeft: 5, fontSize: 18, fontWeight: "bold" }}
-              onPress={() => navigation.navigate('Profile')}
+              // onPress={() => navigation.navigate('Profile',[recipientData.name,recipientData.email,recipientData._id],recipientData.image,recipientData.number,recipientData.occupation)}
+              onPress={()=>console.log('You clicked  the author!')}
             >
               {recipientData?.name}
             </Text>

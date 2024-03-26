@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View,ScrollView } from "react-native";
+import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../userContext";
 import { useNavigation } from "@react-navigation/native";
@@ -43,10 +43,13 @@ console.log('friends list',acceptedFriends);
       <ScrollView showsVerticalScrollIndicator={false}>
       {loading ? (
           <LoadingIndicator visible={loading} /> // Use LoadingIndicator component here
-        ):
-        <Pressable>
+        ) : acceptedFriends.length === 0 ? (
+          <Text style={styles.noFriendsText}>No accepted friends</Text>
+        ) : (
+          <Pressable>
             {acceptedFriends.map((item,index)=>(<UserChat key={index} item={item}/>))}
-        </Pressable>
+          </Pressable>
+        )
       }
       </ScrollView>
     </View>
@@ -55,4 +58,11 @@ console.log('friends list',acceptedFriends);
 
 export default ChatScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  noFriendsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 18,
+    color: "gray",
+  },
+});

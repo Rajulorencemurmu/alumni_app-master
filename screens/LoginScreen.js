@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
@@ -43,9 +43,19 @@ useEffect(() => {
   const checkLoginStatus = async () => {
     try {
       const token = await getTokenFromStorage();
+      // console.log('Token while verifying is =',token);
       if (token) {
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        if(decodedToken.userId){
+          setUserId(decodedToken.userId);
+          
         // Token found, navigate to Home_Screen
         navigation.replace('Home_Screen');
+        }
+        else{
+           // Invalid token, navigate to Login_Screen
+           navigation.navigate('Login_Screen');
+        }
       } else {
         // Token not found, continue with login
       }
@@ -84,6 +94,7 @@ useEffect(() => {
         if ("token" in response.data) {
           const token = response.data.token;
 
+          console.log('Token is =',token);
           // Decode the Base64 token to get the user ID
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
 
@@ -127,6 +138,9 @@ useEffect(() => {
     setLoading(false); // Set loading to false when login process ends
   };
 
+
+
+  
   return (
     <View style={styles.container}>
     {/* <Image src="connecting.png" style={{height:54,width:44,}}/> */}

@@ -527,6 +527,8 @@ app.get("/friends/:userId", (req, res) => {
 //   }
 // });
 
+
+//Handling locations
 app.post("/api/location", async (req, res) => {
   const { currentUserId } = req.body;
   console.log("current user in Maps of index.js=", currentUserId);
@@ -573,26 +575,28 @@ app.post("/api/location", async (req, res) => {
 });
 
 
-// API endpoint to add a new event
-app.post("/api/events", async (req, res) => {
-  const { title, date, time, location } = req.body;
-
-  if (!title || !date || !time || !location) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
+//Handling Events
+app.post("/api/events",async(req,res)=>{
   try {
-    const newEvent = new Event({ title, date, time, location });
-    await newEvent.save();
-    res.status(201).json(newEvent);
-    console.log('successfully saved events into db',newEvent);
+    const event=new Event(req.body);
+    await event.save();
+    res.status(201).json(event);
   } catch (error) {
-    console.error("Error creating event: ", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log('Error saving Events',error);
+    res.status(500).json({ error: 'An error occurred while saving the event.' });
   }
-});
+})
 
-// API endpoint to get all events
+app.get("/api/events",async(req,res)=>{
+  try{
+    const events=await Event.find();
+    res.json(events);
+  }catch(error){
+    console.error('Error fetching events:', error);
+    res.status(500).json({ error: 'An error occurred while fetching events.' });
+  }
+})
+
 // app.get("/api/events", async (req, res) => {
 //   try {
 //     console.log('I am now fetching the details of api events');
@@ -602,3 +606,5 @@ app.post("/api/events", async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // });
+
+//

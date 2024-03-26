@@ -12,17 +12,16 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import { UserType } from "../userContext";
 import { useContext } from "react";
 
-
 const Home_Screen = () => {
-  const { userId,setUserId,logout } = useContext(UserType);
+  const { userId, setUserId, logout } = useContext(UserType);
   console.log('userId in home screen.js',userId)
 
-  const {route} = useRoute();
+  const { route } = useRoute();
 
   // const {user}  = route.params;
   // const {name}=user;
@@ -53,9 +52,9 @@ const Home_Screen = () => {
           {
             text: "Yes",
             onPress: async () => {
-              await AsyncStorage.removeItem('authToken');
+              await AsyncStorage.removeItem("authToken");
               logout();
-              navigation.navigate('Login_Screen');
+              navigation.navigate("Login_Screen");
             },
           },
         ],
@@ -72,9 +71,6 @@ const Home_Screen = () => {
     return () => backHandler.remove();
   }, []); // Empty dependency array to run effect only once
 
-
-
-
   const handleLogout = async () => {
     try {
       Alert.alert(
@@ -88,9 +84,9 @@ const Home_Screen = () => {
           {
             text: "Yes",
             onPress: async () => {
-              await AsyncStorage.removeItem('authToken');
+              await AsyncStorage.removeItem("authToken");
               logout();
-              navigation.navigate('Login_Screen');
+              navigation.navigate("Login_Screen");
             },
           },
         ],
@@ -98,24 +94,22 @@ const Home_Screen = () => {
       );
       return true;
     } catch (error) {
-      console.log('Error during logout:', error.message);
-      Alert.alert('Logout Error', 'An error occurred while logging out');
+      console.log("Error during logout:", error.message);
+      Alert.alert("Logout Error", "An error occurred while logging out");
     }
   };
 
-
-
   useFocusEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Home',
+      headerTitle: userId?userId:"Home",
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
-            if (isDrawerOpen) {
-              drawerRef.current.closeDrawer();
-            } else {
-              drawerRef.current.openDrawer();
-            }
+            // if (isDrawerOpen) {
+            //   drawerRef.current.closeDrawer();
+            // } else {
+            //   drawerRef.current.openDrawer();
+            // }
           }}
           style={{ marginLeft: 15 }}
         >
@@ -127,26 +121,53 @@ const Home_Screen = () => {
 
   const navigationView = (
     <View style={styles.navigationContainer}>
-      <View style={{ flexDirection: "row", gap: 12 ,padding:4}}>
+      <View style={{ flexDirection: "row", gap: 12, padding: 4 }}>
         <Ionicons name="home-outline" size={24} color="black" />
-        <Text onPress={() => navigation.navigate("Home_Screen")}>Home</Text>
+        <Text
+          onPress={() => {
+            navigation.navigate("Home_Screen");
+            handleDrawerClose();
+          }}
+        >
+          Home
+        </Text>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 12, marginTop: 12,padding:4 }}>
+      <View
+        style={{ flexDirection: "row", gap: 12, marginTop: 12, padding: 4 }}
+      >
         <MaterialCommunityIcons
           name="account-circle-outline"
           size={24}
           color="black"
         />
-        <Text onPress={() => navigation.navigate("MyProfile")}>My Profile</Text>
+        <Text
+          onPress={() => {
+            navigation.navigate("MyProfile");
+            handleDrawerClose();
+          }}
+        >
+          My Profile
+        </Text>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 12, marginTop: 12,padding:4 }}>
+      <View
+        style={{ flexDirection: "row", gap: 12, marginTop: 12, padding: 4 }}
+      >
         <MaterialIcons name="message" size={24} color="black" />
-        <Text onPress={() => navigation.navigate("Chats")}>Message</Text>
+        <Text
+          onPress={() => {
+            navigation.navigate("Chats");
+            handleDrawerClose();
+          }}
+        >
+          Message
+        </Text>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 12, marginTop: 12 ,padding:4}}>
+      <View
+        style={{ flexDirection: "row", gap: 12, marginTop: 12, padding: 4 }}
+      >
         <MaterialIcons name="event" size={24} color="black" />
         <Text onPress={() => navigation.navigate("Events")}>Events</Text>
       </View>
@@ -157,14 +178,13 @@ const Home_Screen = () => {
           width: 180,
           backgroundColor: "#ccc",
           marginTop: 320,
-
         }}
       />
-    <View style={{ flexDirection: "row", gap: 12,marginTop:5,padding:4 }}>
-    <Ionicons name="help-circle-outline" size={24} color="black" />
-    <Text onPress={() => navigation.navigate("Screen3")}>Help</Text>
-    </View>
-      <View style={{ flexDirection: "row", gap: 12,marginTop:5,padding:4 }}>
+      <View style={{ flexDirection: "row", gap: 12, marginTop: 5, padding: 4 }}>
+        <Ionicons name="help-circle-outline" size={24} color="black" />
+        <Text onPress={() => navigation.navigate("Screen3")}>Help</Text>
+      </View>
+      <View style={{ flexDirection: "row", gap: 12, marginTop: 5, padding: 4 }}>
         <MaterialIcons name="logout" size={24} color="black" />
         <Text onPress={handleLogout}>Logout</Text>
       </View>

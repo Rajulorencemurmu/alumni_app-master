@@ -5,8 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import BASE_URL from "../apiConfig";
 
 const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
-    console.log("Image=",item.image);
-    console.log("name=",item.name);
+    console.log("Image in friendRequest.js=",item.image);
+    console.log("name in friendRequest.js=",item.name);
   const { userId, setUserId } = useContext(UserType);
   const navigation = useNavigation();
   const acceptRequest = async (friendRequestId) => {
